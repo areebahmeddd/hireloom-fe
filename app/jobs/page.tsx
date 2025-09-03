@@ -17,6 +17,7 @@ import {
   Clock,
   MapPin,
   DollarSign,
+  Trash2,
 } from "lucide-react";
 
 // Utility function to format time ago
@@ -119,6 +120,22 @@ export default function JobManagement() {
     setIsEditDialogOpen(true);
   };
 
+  const handleDeleteJob = () => {
+    if (confirm(`Are you sure you want to delete "${selectedJob.title}"? This action cannot be undone.`)) {
+      // Remove the job from the jobs array
+      const updatedJobs = jobs.filter(job => job.id !== selectedJob.id);
+      setJobs(updatedJobs);
+      
+      // If we deleted the selected job, select the first available job or null
+      if (updatedJobs.length > 0) {
+        setSelectedJob(updatedJobs[0]);
+      } else {
+        // If no jobs left, you might want to redirect or show an empty state
+        setSelectedJob(null as any); // or handle this case appropriately
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <Navigation />
@@ -173,8 +190,10 @@ export default function JobManagement() {
 
         {/* Right Panel - Job Details */}
         <div className="flex-1 p-6 overflow-y-auto">
-          {/* Job Header */}
-          <div className="mb-6">
+          {selectedJob ? (
+            <>
+              {/* Job Header */}
+              <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 mb-1">
@@ -197,10 +216,20 @@ export default function JobManagement() {
                   <Clock className="w-4 h-4 mr-1" />
                   Created {formatTimeAgo(selectedJob.createdAt)}
                 </div>
-                <Button variant="outline" onClick={handleEditJob}>
-                  <Edit3 className="w-4 h-4 mr-2" />
-                  Edit Job
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" onClick={handleEditJob}>
+                    <Edit3 className="w-4 h-4 mr-2" />
+                    Edit Job
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    onClick={handleDeleteJob}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete Job
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -256,6 +285,24 @@ export default function JobManagement() {
               <ContactProgress job={selectedJob} />
             </TabsContent>
           </Tabs>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="max-w-md">
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">No Jobs Available</h2>
+                <p className="text-slate-600 mb-6">
+                  You don't have any job postings yet. Create your first job to get started with recruiting.
+                </p>
+                <Button 
+                  onClick={() => setIsCreateDialogOpen(true)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Edit3 className="w-4 h-4 mr-2" />
+                  Create Your First Job
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
