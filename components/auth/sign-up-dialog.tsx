@@ -1,12 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Mail, Lock, User, Building, Github, Chrome } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Building, Github, Chrome, CheckCircle, XCircle } from 'lucide-react';
+import { signUpWithEmail, SignUpData } from '@/lib/auth';
+import { FirebaseError } from 'firebase/app';
+import { toast } from 'sonner';
 
 interface SignUpDialogProps {
   open: boolean;
@@ -15,6 +19,7 @@ interface SignUpDialogProps {
 }
 
 export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDialogProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,29 +30,112 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Full name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (!formData.company.trim()) {
+      newErrors.company = 'Company name is required';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+    if (!validateForm()) {
       return;
     }
 
     setIsLoading(true);
+    setErrors({});
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const signUpData: SignUpData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        company: formData.company.trim(),
+        password: formData.password,
+      };
+
+      await signUpWithEmail(signUpData);
+      
+      toast.success('Account created successfully!', {
+        description: 'Welcome to Hireloom. Redirecting to dashboard...',
+      });
+
+      // Reset form and close dialog
+      resetForm();
       onOpenChange(false);
-      // Redirect to dashboard or handle successful signup
-    }, 1500);
+      
+      // Redirect to dashboard after successful signup
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
+
+    } catch (error) {
+      console.error('Signup error:', error);
+      
+      let errorMessage = 'Failed to create account. Please try again.';
+      
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'An account with this email already exists.';
+            setErrors({ email: errorMessage });
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address.';
+            setErrors({ email: errorMessage });
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password is too weak. Please choose a stronger password.';
+            setErrors({ password: errorMessage });
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your connection and try again.';
+            break;
+          default:
+            errorMessage = error.message || errorMessage;
+        }
+      }
+
+      toast.error('Sign up failed', {
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetForm = () => {
     setFormData({ name: '', email: '', company: '', password: '', confirmPassword: '' });
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setErrors({});
   };
 
   const handleClose = () => {
@@ -93,11 +181,20 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 id="name"
                 type="text"
                 placeholder="Enter your full name"
-                className="pl-10"
+                className={`pl-10 ${errors.name ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, name: e.target.value }));
+                  if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                }}
                 required
               />
+              {errors.name && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <XCircle className="w-4 h-4 mr-1" />
+                  {errors.name}
+                </div>
+              )}
             </div>
           </div>
 
@@ -110,11 +207,20 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                className="pl-10"
+                className={`pl-10 ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, email: e.target.value }));
+                  if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                }}
                 required
               />
+              {errors.email && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <XCircle className="w-4 h-4 mr-1" />
+                  {errors.email}
+                </div>
+              )}
             </div>
           </div>
 
@@ -127,11 +233,20 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 id="company"
                 type="text"
                 placeholder="Enter your company name"
-                className="pl-10"
+                className={`pl-10 ${errors.company ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.company}
-                onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, company: e.target.value }));
+                  if (errors.company) setErrors(prev => ({ ...prev, company: '' }));
+                }}
                 required
               />
+              {errors.company && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <XCircle className="w-4 h-4 mr-1" />
+                  {errors.company}
+                </div>
+              )}
             </div>
           </div>
 
@@ -144,9 +259,12 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Create a password"
-                className="pl-10 pr-10"
+                className={`pl-10 pr-10 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.password}
-                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, password: e.target.value }));
+                  if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
+                }}
                 required
               />
               <button
@@ -157,6 +275,12 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            {errors.password && (
+              <div className="flex items-center mt-1 text-sm text-red-600">
+                <XCircle className="w-4 h-4 mr-1" />
+                {errors.password}
+              </div>
+            )}
           </div>
 
           {/* Confirm Password */}
@@ -168,9 +292,12 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm your password"
-                className="pl-10 pr-10"
+                className={`pl-10 pr-10 ${errors.confirmPassword ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, confirmPassword: e.target.value }));
+                  if (errors.confirmPassword) setErrors(prev => ({ ...prev, confirmPassword: '' }));
+                }}
                 required
               />
               <button
@@ -181,6 +308,12 @@ export function SignUpDialog({ open, onOpenChange, onSwitchToSignIn }: SignUpDia
                 {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            {errors.confirmPassword && (
+              <div className="flex items-center mt-1 text-sm text-red-600">
+                <XCircle className="w-4 h-4 mr-1" />
+                {errors.confirmPassword}
+              </div>
+            )}
           </div>
 
           {/* Terms */}

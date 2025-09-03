@@ -1,12 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Mail, Lock, Github, Chrome } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Github, Chrome, XCircle } from 'lucide-react';
+import { signInWithEmail, SignInData } from '@/lib/auth';
+import { FirebaseError } from 'firebase/app';
+import { toast } from 'sonner';
 
 interface SignInDialogProps {
   open: boolean;
@@ -15,28 +19,101 @@ interface SignInDialogProps {
 }
 
 export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDialogProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    setErrors({});
+    
+    try {
+      const signInData: SignInData = {
+        email: formData.email.trim(),
+        password: formData.password,
+      };
+
+      await signInWithEmail(signInData);
+      
+      toast.success('Welcome back!', {
+        description: 'Signed in successfully. Redirecting to dashboard...',
+      });
+
+      // Reset form and close dialog
+      resetForm();
       onOpenChange(false);
-      // Redirect to dashboard or handle successful login
-    }, 1500);
+      
+      // Redirect to dashboard after successful signin
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
+
+    } catch (error) {
+      console.error('Signin error:', error);
+      
+      let errorMessage = 'Failed to sign in. Please try again.';
+      
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+          case 'auth/invalid-credential':
+            errorMessage = 'Invalid email or password.';
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'This account has been disabled.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Please try again later.';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your connection and try again.';
+            break;
+          default:
+            errorMessage = error.message || errorMessage;
+        }
+      }
+
+      toast.error('Sign in failed', {
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetForm = () => {
     setFormData({ email: '', password: '' });
     setShowPassword(false);
+    setErrors({});
   };
 
   const handleClose = () => {
@@ -82,11 +159,20 @@ export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDia
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                className="pl-10"
+                className={`pl-10 ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, email: e.target.value }));
+                  if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                }}
                 required
               />
+              {errors.email && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <XCircle className="w-4 h-4 mr-1" />
+                  {errors.email}
+                </div>
+              )}
             </div>
           </div>
 
@@ -99,9 +185,12 @@ export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDia
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
-                className="pl-10 pr-10"
+                className={`pl-10 pr-10 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 value={formData.password}
-                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, password: e.target.value }));
+                  if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
+                }}
                 required
               />
               <button
@@ -112,6 +201,12 @@ export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDia
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            {errors.password && (
+              <div className="flex items-center mt-1 text-sm text-red-600">
+                <XCircle className="w-4 h-4 mr-1" />
+                {errors.password}
+              </div>
+            )}
           </div>
 
           {/* Forgot Password */}

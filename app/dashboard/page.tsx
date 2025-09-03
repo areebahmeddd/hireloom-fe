@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Navigation } from "@/components/navigation";
+import { ProtectedRoute } from "@/components/protected-route";
 
 const jobCards = [
   {
@@ -64,19 +65,20 @@ const metrics = [
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Navigation />
+    <ProtectedRoute>
+      <div className="min-h-screen bg-slate-50">
+        <Navigation />
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            AI Recruiter Dashboard
-          </h1>
-          <p className="text-slate-600">
-            Manage your job postings and track candidate progress
-          </p>
-        </div>
+        <main className="max-w-7xl mx-auto px-6 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              AI Recruiter Dashboard
+            </h1>
+            <p className="text-slate-600">
+              Manage your job postings and track candidate progress
+            </p>
+          </div>
 
         {/* Quick Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -213,5 +215,6 @@ export default function Dashboard() {
         </Card>
       </main>
     </div>
+    </ProtectedRoute>
   );
 }
