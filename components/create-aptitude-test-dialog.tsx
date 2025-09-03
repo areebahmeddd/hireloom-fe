@@ -1,18 +1,35 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { Clock, FileText, Brain, Send, Eye } from 'lucide-react';
-import { generateQuestionsFromJobDescription, sendTestToCandidate, AptitudeTest, Question } from '@/lib/aptitude-test';
-import { toast } from 'sonner';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Clock, FileText, Brain, Send, Eye } from "lucide-react";
+import {
+  generateQuestionsFromJobDescription,
+  sendTestToCandidate,
+  AptitudeTest,
+  Question,
+} from "@/lib/aptitude-test";
+import { toast } from "sonner";
 
 interface CreateAptitudeTestDialogProps {
   open: boolean;
@@ -30,17 +47,17 @@ interface CreateAptitudeTestDialogProps {
   };
 }
 
-export function CreateAptitudeTestDialog({ 
-  open, 
-  onOpenChange, 
+export function CreateAptitudeTestDialog({
+  open,
+  onOpenChange,
   jobData,
-  candidate 
+  candidate,
 }: CreateAptitudeTestDialogProps) {
-  const [step, setStep] = useState<'setup' | 'preview' | 'send'>('setup');
+  const [step, setStep] = useState<"setup" | "preview" | "send">("setup");
   const [testConfig, setTestConfig] = useState({
     duration: 30,
     questionCount: 10,
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    difficulty: "medium" as "easy" | "medium" | "hard",
     passingScore: 70,
   });
   const [generatedQuestions, setGeneratedQuestions] = useState<Question[]>([]);
@@ -49,7 +66,7 @@ export function CreateAptitudeTestDialog({
 
   const handleGenerateQuestions = async () => {
     if (!jobData) return;
-    
+
     setIsGenerating(true);
     try {
       const questions = await generateQuestionsFromJobDescription(
@@ -57,14 +74,14 @@ export function CreateAptitudeTestDialog({
         jobData.description,
         jobData.skills,
         testConfig.difficulty,
-        testConfig.questionCount
+        testConfig.questionCount,
       );
       setGeneratedQuestions(questions);
-      setStep('preview');
-      toast.success('Questions generated successfully!');
+      setStep("preview");
+      toast.success("Questions generated successfully!");
     } catch (error) {
-      toast.error('Failed to generate questions');
-      console.error('Error generating questions:', error);
+      toast.error("Failed to generate questions");
+      console.error("Error generating questions:", error);
     } finally {
       setIsGenerating(false);
     }
@@ -72,7 +89,7 @@ export function CreateAptitudeTestDialog({
 
   const handleSendTest = async () => {
     if (!jobData || !candidate || generatedQuestions.length === 0) return;
-    
+
     setIsSending(true);
     try {
       const test: AptitudeTest = {
@@ -84,29 +101,33 @@ export function CreateAptitudeTestDialog({
         duration: testConfig.duration,
         passingScore: testConfig.passingScore,
         createdAt: new Date(),
-        createdBy: 'current_user', // Replace with actual user ID
+        createdBy: "current_user", // Replace with actual user ID
       };
 
-      const testLink = await sendTestToCandidate(test, candidate.email, candidate.name);
-      
-      toast.success('Aptitude test sent successfully!', {
+      const testLink = await sendTestToCandidate(
+        test,
+        candidate.email,
+        candidate.name,
+      );
+
+      toast.success("Aptitude test sent successfully!", {
         description: `Test link sent to ${candidate.name} at ${candidate.email}`,
       });
-      
+
       // Reset and close dialog
-      setStep('setup');
+      setStep("setup");
       setGeneratedQuestions([]);
       onOpenChange(false);
     } catch (error) {
-      toast.error('Failed to send test');
-      console.error('Error sending test:', error);
+      toast.error("Failed to send test");
+      console.error("Error sending test:", error);
     } finally {
       setIsSending(false);
     }
   };
 
   const handleClose = () => {
-    setStep('setup');
+    setStep("setup");
     setGeneratedQuestions([]);
     onOpenChange(false);
   };
@@ -118,13 +139,11 @@ export function CreateAptitudeTestDialog({
           <DialogTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5" />
             Create Aptitude Test
-            {jobData && (
-              <Badge variant="secondary">{jobData.title}</Badge>
-            )}
+            {jobData && <Badge variant="secondary">{jobData.title}</Badge>}
           </DialogTitle>
         </DialogHeader>
 
-        {step === 'setup' && (
+        {step === "setup" && (
           <div className="space-y-6">
             {/* Job Information */}
             {jobData && (
@@ -135,13 +154,21 @@ export function CreateAptitudeTestDialog({
                 <CardContent className="space-y-3">
                   <div>
                     <Label className="text-sm font-medium">Position</Label>
-                    <p className="text-sm text-muted-foreground">{jobData.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {jobData.title}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Required Skills</Label>
+                    <Label className="text-sm font-medium">
+                      Required Skills
+                    </Label>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {jobData.skills.map((skill) => (
-                        <Badge key={skill} variant="outline" className="text-xs">
+                        <Badge
+                          key={skill}
+                          variant="outline"
+                          className="text-xs"
+                        >
                           {skill}
                         </Badge>
                       ))}
@@ -166,10 +193,12 @@ export function CreateAptitudeTestDialog({
                       min="10"
                       max="120"
                       value={testConfig.duration}
-                      onChange={(e) => setTestConfig(prev => ({ 
-                        ...prev, 
-                        duration: parseInt(e.target.value) || 30 
-                      }))}
+                      onChange={(e) =>
+                        setTestConfig((prev) => ({
+                          ...prev,
+                          duration: parseInt(e.target.value) || 30,
+                        }))
+                      }
                     />
                   </div>
                   <div>
@@ -180,21 +209,26 @@ export function CreateAptitudeTestDialog({
                       min="5"
                       max="25"
                       value={testConfig.questionCount}
-                      onChange={(e) => setTestConfig(prev => ({ 
-                        ...prev, 
-                        questionCount: parseInt(e.target.value) || 10 
-                      }))}
+                      onChange={(e) =>
+                        setTestConfig((prev) => ({
+                          ...prev,
+                          questionCount: parseInt(e.target.value) || 10,
+                        }))
+                      }
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Difficulty Level</Label>
-                    <Select 
-                      value={testConfig.difficulty} 
-                      onValueChange={(value: 'easy' | 'medium' | 'hard') => 
-                        setTestConfig(prev => ({ ...prev, difficulty: value }))
+                    <Select
+                      value={testConfig.difficulty}
+                      onValueChange={(value: "easy" | "medium" | "hard") =>
+                        setTestConfig((prev) => ({
+                          ...prev,
+                          difficulty: value,
+                        }))
                       }
                     >
                       <SelectTrigger>
@@ -215,10 +249,12 @@ export function CreateAptitudeTestDialog({
                       min="50"
                       max="100"
                       value={testConfig.passingScore}
-                      onChange={(e) => setTestConfig(prev => ({ 
-                        ...prev, 
-                        passingScore: parseInt(e.target.value) || 70 
-                      }))}
+                      onChange={(e) =>
+                        setTestConfig((prev) => ({
+                          ...prev,
+                          passingScore: parseInt(e.target.value) || 70,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -235,11 +271,15 @@ export function CreateAptitudeTestDialog({
                   <div className="space-y-2">
                     <div>
                       <Label className="text-sm font-medium">Candidate</Label>
-                      <p className="text-sm text-muted-foreground">{candidate.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {candidate.name}
+                      </p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium">Email</Label>
-                      <p className="text-sm text-muted-foreground">{candidate.email}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {candidate.email}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -248,15 +288,18 @@ export function CreateAptitudeTestDialog({
           </div>
         )}
 
-        {step === 'preview' && (
+        {step === "preview" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Generated Questions Preview</h3>
+              <h3 className="text-lg font-semibold">
+                Generated Questions Preview
+              </h3>
               <Badge variant="outline">
-                {generatedQuestions.length} questions • {testConfig.duration} minutes
+                {generatedQuestions.length} questions • {testConfig.duration}{" "}
+                minutes
               </Badge>
             </div>
-            
+
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {generatedQuestions.map((question, index) => (
                 <Card key={question.id}>
@@ -264,7 +307,7 @@ export function CreateAptitudeTestDialog({
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <Badge variant="secondary" className="text-xs">
-                          {question.type.replace('_', ' ')} • {question.skill}
+                          {question.type.replace("_", " ")} • {question.skill}
                         </Badge>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Clock className="h-3 w-3" />
@@ -277,12 +320,12 @@ export function CreateAptitudeTestDialog({
                       {question.options && (
                         <div className="ml-4 space-y-1">
                           {question.options.map((option, optIndex) => (
-                            <div 
-                              key={optIndex} 
+                            <div
+                              key={optIndex}
                               className={`text-xs p-2 rounded ${
-                                optIndex === question.correctAnswer 
-                                  ? 'bg-green-50 text-green-700 border border-green-200' 
-                                  : 'bg-gray-50'
+                                optIndex === question.correctAnswer
+                                  ? "bg-green-50 text-green-700 border border-green-200"
+                                  : "bg-gray-50"
                               }`}
                             >
                               {String.fromCharCode(65 + optIndex)}. {option}
@@ -299,12 +342,12 @@ export function CreateAptitudeTestDialog({
         )}
 
         <DialogFooter className="flex gap-2">
-          {step === 'setup' && (
+          {step === "setup" && (
             <>
               <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleGenerateQuestions}
                 disabled={!jobData || isGenerating}
                 className="flex items-center gap-2"
@@ -323,13 +366,13 @@ export function CreateAptitudeTestDialog({
               </Button>
             </>
           )}
-          
-          {step === 'preview' && (
+
+          {step === "preview" && (
             <>
-              <Button variant="outline" onClick={() => setStep('setup')}>
+              <Button variant="outline" onClick={() => setStep("setup")}>
                 Back to Setup
               </Button>
-              <Button 
+              <Button
                 onClick={handleSendTest}
                 disabled={!candidate || isSending}
                 className="flex items-center gap-2"

@@ -1,21 +1,27 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Navigation } from '@/components/navigation';
-import { CandidateTable } from '@/components/candidate-table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Download } from 'lucide-react';
+import { useState } from "react";
+import { Navigation } from "@/components/navigation";
+import { CandidateTable } from "@/components/candidate-table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter, Download } from "lucide-react";
 
 export default function Candidates() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [jobFilter, setJobFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [jobFilter, setJobFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   return (
     <div className="min-h-screen bg-slate-50">
       <Navigation />
-      
+
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -33,14 +39,14 @@ export default function Candidates() {
           <div className="flex items-center space-x-4 flex-1">
             <div className="relative flex-1 min-w-0">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <Input 
+              <Input
                 placeholder="Search candidates..."
                 className="pl-10 w-full"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <Select value={jobFilter} onValueChange={setJobFilter}>
               <SelectTrigger className="w-48 flex-shrink-0">
                 <SelectValue placeholder="Filter by job" />
@@ -80,8 +86,8 @@ export default function Candidates() {
         </div>
 
         {/* Candidate Table */}
-        <CandidateTable 
-          showAllJobs 
+        <CandidateTable
+          showAllJobs
           searchTerm={searchTerm}
           jobFilter={jobFilter}
           statusFilter={statusFilter}

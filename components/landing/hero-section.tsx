@@ -162,16 +162,18 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                   {stats.map((stat, index) => (
                     <div
                       key={index}
-                      className={`p-4 rounded-lg transition-all duration-500 component-transition ${index === currentStat
+                      className={`p-4 rounded-lg transition-all duration-500 component-transition ${
+                        index === currentStat
                           ? "bg-white border-2 border-white scale-105"
                           : "bg-slate-50 border border-slate-200"
-                        }`}
+                      }`}
                     >
                       <div
-                        className={`text-2xl font-bold ${index === currentStat
+                        className={`text-2xl font-bold ${
+                          index === currentStat
                             ? "text-blue-600"
                             : "text-slate-900"
-                          }`}
+                        }`}
                       >
                         {stat.number}
                       </div>

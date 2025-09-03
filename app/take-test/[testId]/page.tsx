@@ -1,96 +1,109 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { Clock, CheckCircle, AlertCircle, Brain } from 'lucide-react';
-import { AptitudeTest, Question, TestResponse, calculateTestScore } from '@/lib/aptitude-test';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { Clock, CheckCircle, AlertCircle, Brain } from "lucide-react";
+import {
+  AptitudeTest,
+  Question,
+  TestResponse,
+  calculateTestScore,
+} from "@/lib/aptitude-test";
+import { toast } from "sonner";
 
 export default function TakeTestPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const testId = params.testId as string;
-  const candidateEmail = searchParams.get('candidate');
+  const candidateEmail = searchParams.get("candidate");
 
   const [test, setTest] = useState<AptitudeTest | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<{ questionId: string; answer: string | number }[]>([]);
+  const [answers, setAnswers] = useState<
+    { questionId: string; answer: string | number }[]
+  >([]);
   const [timeRemaining, setTimeRemaining] = useState(0);
-  const [testStatus, setTestStatus] = useState<'loading' | 'ready' | 'in_progress' | 'completed' | 'error'>('loading');
-  const [candidateName, setCandidateName] = useState('');
+  const [testStatus, setTestStatus] = useState<
+    "loading" | "ready" | "in_progress" | "completed" | "error"
+  >("loading");
+  const [candidateName, setCandidateName] = useState("");
   const [testResults, setTestResults] = useState<any>(null);
 
   // Mock test data - in real app, this would be fetched from API
   useEffect(() => {
     const mockTest: AptitudeTest = {
       id: testId,
-      jobId: '1',
-      jobTitle: 'Frontend Developer',
-      jobDescription: 'Frontend Developer role requiring React, TypeScript, and Next.js skills',
+      jobId: "1",
+      jobTitle: "Frontend Developer",
+      jobDescription:
+        "Frontend Developer role requiring React, TypeScript, and Next.js skills",
       questions: [
         {
-          id: 'q1',
-          type: 'multiple_choice',
-          question: 'What is the primary advantage of using React in modern web development?',
+          id: "q1",
+          type: "multiple_choice",
+          question:
+            "What is the primary advantage of using React in modern web development?",
           options: [
-            'React provides better performance optimization',
-            'React has a smaller learning curve',
-            'React is only suitable for small projects',
-            'React doesn\'t require any configuration'
+            "React provides better performance optimization",
+            "React has a smaller learning curve",
+            "React is only suitable for small projects",
+            "React doesn't require any configuration",
           ],
           correctAnswer: 0,
-          difficulty: 'medium',
-          skill: 'React',
-          timeLimit: 3
+          difficulty: "medium",
+          skill: "React",
+          timeLimit: 3,
         },
         {
-          id: 'q2',
-          type: 'multiple_choice',
-          question: 'Which TypeScript feature helps catch errors at compile time?',
+          id: "q2",
+          type: "multiple_choice",
+          question:
+            "Which TypeScript feature helps catch errors at compile time?",
           options: [
-            'Dynamic typing',
-            'Static type checking',
-            'Runtime validation',
-            'Loose type coercion'
+            "Dynamic typing",
+            "Static type checking",
+            "Runtime validation",
+            "Loose type coercion",
           ],
           correctAnswer: 1,
-          difficulty: 'medium',
-          skill: 'TypeScript',
-          timeLimit: 3
+          difficulty: "medium",
+          skill: "TypeScript",
+          timeLimit: 3,
         },
         {
-          id: 'q3',
-          type: 'short_answer',
-          question: 'Describe how you would optimize a React application for better performance. Mention at least 3 techniques.',
-          difficulty: 'hard',
-          skill: 'React Performance',
-          timeLimit: 10
-        }
+          id: "q3",
+          type: "short_answer",
+          question:
+            "Describe how you would optimize a React application for better performance. Mention at least 3 techniques.",
+          difficulty: "hard",
+          skill: "React Performance",
+          timeLimit: 10,
+        },
       ],
       duration: 30,
       passingScore: 70,
       createdAt: new Date(),
-      createdBy: 'recruiter1'
+      createdBy: "recruiter1",
     };
 
     setTest(mockTest);
     setTimeRemaining(mockTest.duration * 60); // Convert to seconds
-    setTestStatus('ready');
+    setTestStatus("ready");
   }, [testId]);
 
   // Timer countdown
   useEffect(() => {
-    if (testStatus === 'in_progress' && timeRemaining > 0) {
+    if (testStatus === "in_progress" && timeRemaining > 0) {
       const timer = setInterval(() => {
-        setTimeRemaining(prev => {
+        setTimeRemaining((prev) => {
           if (prev <= 1) {
             submitTest();
             return 0;
@@ -105,17 +118,19 @@ export default function TakeTestPage() {
 
   const startTest = () => {
     if (!candidateName.trim()) {
-      toast.error('Please enter your name to start the test');
+      toast.error("Please enter your name to start the test");
       return;
     }
-    setTestStatus('in_progress');
+    setTestStatus("in_progress");
   };
 
   const handleAnswer = (questionId: string, answer: string | number) => {
-    setAnswers(prev => {
-      const existing = prev.find(a => a.questionId === questionId);
+    setAnswers((prev) => {
+      const existing = prev.find((a) => a.questionId === questionId);
       if (existing) {
-        return prev.map(a => a.questionId === questionId ? { ...a, answer } : a);
+        return prev.map((a) =>
+          a.questionId === questionId ? { ...a, answer } : a,
+        );
       }
       return [...prev, { questionId, answer }];
     });
@@ -123,7 +138,7 @@ export default function TakeTestPage() {
 
   const nextQuestion = () => {
     if (test && currentQuestionIndex < test.questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
+      setCurrentQuestionIndex((prev) => prev + 1);
     } else {
       submitTest();
     }
@@ -134,19 +149,19 @@ export default function TakeTestPage() {
 
     const results = calculateTestScore(test, answers);
     setTestResults(results);
-    setTestStatus('completed');
+    setTestStatus("completed");
 
     // In real app, this would submit to API
-    toast.success('Test submitted successfully!');
+    toast.success("Test submitted successfully!");
   };
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  if (testStatus === 'loading') {
+  if (testStatus === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
@@ -161,7 +176,9 @@ export default function TakeTestPage() {
           <CardContent className="p-6 text-center">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">Test Not Found</h2>
-            <p className="text-muted-foreground">The test link may be invalid or expired.</p>
+            <p className="text-muted-foreground">
+              The test link may be invalid or expired.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -182,7 +199,7 @@ export default function TakeTestPage() {
           </Badge>
         </div>
 
-        {testStatus === 'ready' && (
+        {testStatus === "ready" && (
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle>Test Instructions</CardTitle>
@@ -191,15 +208,21 @@ export default function TakeTestPage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Clock className="h-5 w-5 text-blue-600" />
-                  <span><strong>Duration:</strong> {test.duration} minutes</span>
+                  <span>
+                    <strong>Duration:</strong> {test.duration} minutes
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span><strong>Questions:</strong> {test.questions.length}</span>
+                  <span>
+                    <strong>Questions:</strong> {test.questions.length}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <AlertCircle className="h-5 w-5 text-orange-600" />
-                  <span><strong>Passing Score:</strong> {test.passingScore}%</span>
+                  <span>
+                    <strong>Passing Score:</strong> {test.passingScore}%
+                  </span>
                 </div>
               </div>
 
@@ -231,22 +254,27 @@ export default function TakeTestPage() {
           </Card>
         )}
 
-        {testStatus === 'in_progress' && (
+        {testStatus === "in_progress" && (
           <div className="space-y-6">
             {/* Progress Bar */}
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">
-                    Question {currentQuestionIndex + 1} of {test.questions.length}
+                    Question {currentQuestionIndex + 1} of{" "}
+                    {test.questions.length}
                   </span>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-orange-600" />
-                    <span className="text-sm font-mono">{formatTime(timeRemaining)}</span>
+                    <span className="text-sm font-mono">
+                      {formatTime(timeRemaining)}
+                    </span>
                   </div>
                 </div>
-                <Progress 
-                  value={((currentQuestionIndex + 1) / test.questions.length) * 100} 
+                <Progress
+                  value={
+                    ((currentQuestionIndex + 1) / test.questions.length) * 100
+                  }
                   className="h-2"
                 />
               </CardContent>
@@ -269,26 +297,65 @@ export default function TakeTestPage() {
                   {test.questions[currentQuestionIndex].question}
                 </h2>
 
-                {test.questions[currentQuestionIndex].type === 'multiple_choice' && (
+                {test.questions[currentQuestionIndex].type ===
+                  "multiple_choice" && (
                   <RadioGroup
-                    value={answers.find(a => a.questionId === test.questions[currentQuestionIndex].id)?.answer?.toString() || ''}
-                    onValueChange={(value) => handleAnswer(test.questions[currentQuestionIndex].id, parseInt(value))}
+                    value={
+                      answers
+                        .find(
+                          (a) =>
+                            a.questionId ===
+                            test.questions[currentQuestionIndex].id,
+                        )
+                        ?.answer?.toString() || ""
+                    }
+                    onValueChange={(value) =>
+                      handleAnswer(
+                        test.questions[currentQuestionIndex].id,
+                        parseInt(value),
+                      )
+                    }
                   >
-                    {test.questions[currentQuestionIndex].options?.map((option, index) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-                        <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                          {option}
-                        </Label>
-                      </div>
-                    ))}
+                    {test.questions[currentQuestionIndex].options?.map(
+                      (option, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center space-x-2"
+                        >
+                          <RadioGroupItem
+                            value={index.toString()}
+                            id={`option-${index}`}
+                          />
+                          <Label
+                            htmlFor={`option-${index}`}
+                            className="flex-1 cursor-pointer"
+                          >
+                            {option}
+                          </Label>
+                        </div>
+                      ),
+                    )}
                   </RadioGroup>
                 )}
 
-                {test.questions[currentQuestionIndex].type === 'short_answer' && (
+                {test.questions[currentQuestionIndex].type ===
+                  "short_answer" && (
                   <Textarea
-                    value={answers.find(a => a.questionId === test.questions[currentQuestionIndex].id)?.answer?.toString() || ''}
-                    onChange={(e) => handleAnswer(test.questions[currentQuestionIndex].id, e.target.value)}
+                    value={
+                      answers
+                        .find(
+                          (a) =>
+                            a.questionId ===
+                            test.questions[currentQuestionIndex].id,
+                        )
+                        ?.answer?.toString() || ""
+                    }
+                    onChange={(e) =>
+                      handleAnswer(
+                        test.questions[currentQuestionIndex].id,
+                        e.target.value,
+                      )
+                    }
                     placeholder="Type your answer here..."
                     className="min-h-32"
                   />
@@ -297,11 +364,16 @@ export default function TakeTestPage() {
                 <div className="flex justify-between">
                   <div className="text-sm text-muted-foreground">
                     {test.questions[currentQuestionIndex].timeLimit && (
-                      <>Recommended time: {test.questions[currentQuestionIndex].timeLimit} minutes</>
+                      <>
+                        Recommended time:{" "}
+                        {test.questions[currentQuestionIndex].timeLimit} minutes
+                      </>
                     )}
                   </div>
                   <Button onClick={nextQuestion}>
-                    {currentQuestionIndex < test.questions.length - 1 ? 'Next Question' : 'Submit Test'}
+                    {currentQuestionIndex < test.questions.length - 1
+                      ? "Next Question"
+                      : "Submit Test"}
                   </Button>
                 </div>
               </CardContent>
@@ -309,7 +381,7 @@ export default function TakeTestPage() {
           </div>
         )}
 
-        {testStatus === 'completed' && testResults && (
+        {testStatus === "completed" && testResults && (
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="text-center">Test Completed!</CardTitle>
@@ -320,20 +392,28 @@ export default function TakeTestPage() {
                   {testResults.percentage}%
                 </div>
                 <div className="text-lg">
-                  {testResults.score} out of {test.questions.length} questions correct
+                  {testResults.score} out of {test.questions.length} questions
+                  correct
                 </div>
-                <Badge 
-                  variant={testResults.percentage >= test.passingScore ? "default" : "destructive"}
+                <Badge
+                  variant={
+                    testResults.percentage >= test.passingScore
+                      ? "default"
+                      : "destructive"
+                  }
                   className="text-lg px-4 py-2"
                 >
-                  {testResults.percentage >= test.passingScore ? "PASSED" : "NEEDS IMPROVEMENT"}
+                  {testResults.percentage >= test.passingScore
+                    ? "PASSED"
+                    : "NEEDS IMPROVEMENT"}
                 </Badge>
               </div>
 
               <div className="border-t pt-6">
                 <p className="text-muted-foreground">
-                  Thank you for completing the aptitude test for the <strong>{test.jobTitle}</strong> position. 
-                  Our team will review your results and get back to you soon.
+                  Thank you for completing the aptitude test for the{" "}
+                  <strong>{test.jobTitle}</strong> position. Our team will
+                  review your results and get back to you soon.
                 </p>
               </div>
             </CardContent>

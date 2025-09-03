@@ -1,22 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Navigation } from '@/components/navigation';
-import { CandidateTable } from '@/components/candidate-table';
-import { JobAnalytics } from '@/components/job-analytics';
-import { ContactProgress } from '@/components/contact-progress';
-import { CreateJobDialog } from '@/components/create-job-dialog';
-import { Edit3, Users, BarChart3, Clock, MapPin, DollarSign } from 'lucide-react';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Navigation } from "@/components/navigation";
+import { CandidateTable } from "@/components/candidate-table";
+import { JobAnalytics } from "@/components/job-analytics";
+import { ContactProgress } from "@/components/contact-progress";
+import { CreateJobDialog } from "@/components/create-job-dialog";
+import {
+  Edit3,
+  Users,
+  BarChart3,
+  Clock,
+  MapPin,
+  DollarSign,
+} from "lucide-react";
 
 // Utility function to format time ago
 const formatTimeAgo = (date: Date) => {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
+
   if (diffInSeconds < 60) {
     return `${diffInSeconds}s ago`;
   } else if (diffInSeconds < 3600) {
@@ -34,52 +41,56 @@ const formatTimeAgo = (date: Date) => {
 const initialJobs = [
   {
     id: 1,
-    title: 'Frontend Developer',
+    title: "Frontend Developer",
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    description: 'We are looking for a skilled Frontend Developer to join our growing team. The ideal candidate will have strong experience with React, TypeScript, and modern web development practices.',
-    location: 'Bangalore, Karnataka',
-    salary: '₹12L - ₹18L',
-    type: 'Full-time',
-    skills: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS'],
+    description:
+      "We are looking for a skilled Frontend Developer to join our growing team. The ideal candidate will have strong experience with React, TypeScript, and modern web development practices.",
+    location: "Bangalore, Karnataka",
+    salary: "₹12L - ₹18L",
+    type: "Full-time",
+    skills: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
     candidates: 20,
     contacted: 8,
     scheduled: 3,
   },
   {
     id: 2,
-    title: 'Backend Developer',
+    title: "Backend Developer",
     createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-    description: 'Join our backend team to build scalable APIs and services. Experience with Node.js, PostgreSQL, and cloud platforms required.',
-    location: 'Hyderabad, Telangana',
-    salary: '₹15L - ₹22L',
-    type: 'Full-time',
-    skills: ['Node.js', 'PostgreSQL', 'AWS', 'Docker'],
+    description:
+      "Join our backend team to build scalable APIs and services. Experience with Node.js, PostgreSQL, and cloud platforms required.",
+    location: "Hyderabad, Telangana",
+    salary: "₹15L - ₹22L",
+    type: "Full-time",
+    skills: ["Node.js", "PostgreSQL", "AWS", "Docker"],
     candidates: 15,
     contacted: 12,
     scheduled: 5,
   },
   {
     id: 3,
-    title: 'Product Designer',
+    title: "Product Designer",
     createdAt: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-    description: 'Creative Product Designer to lead user experience and interface design. Strong portfolio and user research experience required.',
-    location: 'Mumbai, Maharashtra',
-    salary: '₹10L - ₹16L',
-    type: 'Full-time',
-    skills: ['Figma', 'User Research', 'Prototyping', 'Design Systems'],
+    description:
+      "Creative Product Designer to lead user experience and interface design. Strong portfolio and user research experience required.",
+    location: "Mumbai, Maharashtra",
+    salary: "₹10L - ₹16L",
+    type: "Full-time",
+    skills: ["Figma", "User Research", "Prototyping", "Design Systems"],
     candidates: 8,
     contacted: 8,
     scheduled: 5,
   },
   {
     id: 4,
-    title: 'DevOps Engineer',
+    title: "DevOps Engineer",
     createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
-    description: 'Experienced DevOps Engineer to manage our cloud infrastructure and deployment pipelines. Strong expertise in AWS, Kubernetes, and CI/CD required.',
-    location: 'Pune, Maharashtra',
-    salary: '₹18L - ₹25L',
-    type: 'Full-time',
-    skills: ['AWS', 'Kubernetes', 'Docker', 'Jenkins', 'Terraform'],
+    description:
+      "Experienced DevOps Engineer to manage our cloud infrastructure and deployment pipelines. Strong expertise in AWS, Kubernetes, and CI/CD required.",
+    location: "Pune, Maharashtra",
+    salary: "₹18L - ₹25L",
+    type: "Full-time",
+    skills: ["AWS", "Kubernetes", "Docker", "Jenkins", "Terraform"],
     candidates: 12,
     contacted: 6,
     scheduled: 2,
@@ -93,12 +104,14 @@ export default function JobManagement() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleJobCreate = (newJob: any) => {
-    setJobs(prev => [newJob, ...prev]);
+    setJobs((prev) => [newJob, ...prev]);
     setSelectedJob(newJob);
   };
 
   const handleJobUpdate = (updatedJob: any) => {
-    setJobs(prev => prev.map(job => job.id === updatedJob.id ? updatedJob : job));
+    setJobs((prev) =>
+      prev.map((job) => (job.id === updatedJob.id ? updatedJob : job)),
+    );
     setSelectedJob(updatedJob);
   };
 
@@ -109,13 +122,15 @@ export default function JobManagement() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navigation />
-      
+
       <div className="flex h-[calc(100vh-64px)]">
         {/* Left Sidebar - Job List */}
         <div className="w-80 bg-white border-r border-slate-200 p-6 overflow-y-auto">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Active Jobs</h2>
-            <Button 
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">
+              Active Jobs
+            </h2>
+            <Button
               className="w-full bg-blue-600 hover:bg-blue-700"
               onClick={() => setIsCreateDialogOpen(true)}
             >
@@ -126,10 +141,12 @@ export default function JobManagement() {
 
           <div className="space-y-3">
             {jobs.map((job) => (
-              <Card 
+              <Card
                 key={job.id}
                 className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  selectedJob.id === job.id ? 'ring-2 ring-blue-500 shadow-md' : ''
+                  selectedJob.id === job.id
+                    ? "ring-2 ring-blue-500 shadow-md"
+                    : ""
                 }`}
                 onClick={() => setSelectedJob(job)}
               >
@@ -195,7 +212,9 @@ export default function JobManagement() {
               <CardContent>
                 <p className="text-slate-700 mb-4">{selectedJob.description}</p>
                 <div className="space-y-2">
-                  <h4 className="font-medium text-slate-900">Required Skills</h4>
+                  <h4 className="font-medium text-slate-900">
+                    Required Skills
+                  </h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedJob.skills.map((skill, index) => (
                       <Badge key={index} variant="secondary">
@@ -245,7 +264,7 @@ export default function JobManagement() {
         onOpenChange={setIsCreateDialogOpen}
         onJobCreate={handleJobCreate}
       />
-      
+
       <CreateJobDialog
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}

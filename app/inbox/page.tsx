@@ -1,104 +1,110 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Navigation } from '@/components/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import { Calendar, Send, Archive, Phone, Video, Clock } from 'lucide-react';
+import { useState } from "react";
+import { Navigation } from "@/components/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Calendar, Send, Archive, Phone, Video, Clock } from "lucide-react";
 
 const conversations = [
   {
     id: 1,
-    candidate: 'Alice Johnson',
-    job: 'Frontend Developer',
-    status: 'Active',
-    lastMessage: 'Great! Available Tue 4PM.',
-    timestamp: '2 min ago',
+    candidate: "Alice Johnson",
+    job: "Frontend Developer",
+    status: "Active",
+    lastMessage: "Great! Available Tue 4PM.",
+    timestamp: "2 min ago",
     unread: true,
-    avatar: 'AJ',
+    avatar: "AJ",
   },
   {
     id: 2,
-    candidate: 'Bob Chen',
-    job: 'Backend Developer',
-    status: 'Scheduled',
-    lastMessage: 'Looking forward to our meeting!',
-    timestamp: '1 hour ago',
+    candidate: "Bob Chen",
+    job: "Backend Developer",
+    status: "Scheduled",
+    lastMessage: "Looking forward to our meeting!",
+    timestamp: "1 hour ago",
     unread: false,
-    avatar: 'BC',
+    avatar: "BC",
   },
   {
     id: 3,
-    candidate: 'Carol Smith',
-    job: 'Product Designer',
-    status: 'Interviewed',
-    lastMessage: 'Thank you for the interview!',
-    timestamp: '1 day ago',
+    candidate: "Carol Smith",
+    job: "Product Designer",
+    status: "Interviewed",
+    lastMessage: "Thank you for the interview!",
+    timestamp: "1 day ago",
     unread: false,
-    avatar: 'CS',
+    avatar: "CS",
   },
 ];
 
 const messages = [
   {
     id: 1,
-    sender: 'ai',
-    content: 'Hi Alice! I came across your profile and was impressed by your React and TypeScript experience. We have an exciting Frontend Developer position at our company that might be a great fit for you.',
-    timestamp: '10:30 AM',
+    sender: "ai",
+    content:
+      "Hi Alice! I came across your profile and was impressed by your React and TypeScript experience. We have an exciting Frontend Developer position at our company that might be a great fit for you.",
+    timestamp: "10:30 AM",
   },
   {
     id: 2,
-    sender: 'candidate',
-    content: 'Hey, thanks for reaching out! I\'d love to learn more about the role. What kind of projects would I be working on?',
-    timestamp: '11:15 AM',
+    sender: "candidate",
+    content:
+      "Hey, thanks for reaching out! I'd love to learn more about the role. What kind of projects would I be working on?",
+    timestamp: "11:15 AM",
   },
   {
     id: 3,
-    sender: 'ai',
-    content: 'Great question! You\'d be working on our main product dashboard using Next.js and TypeScript. We\'re building innovative features for data visualization and user experience. The team is collaborative and values clean code and user-centered design.',
-    timestamp: '11:20 AM',
+    sender: "ai",
+    content:
+      "Great question! You'd be working on our main product dashboard using Next.js and TypeScript. We're building innovative features for data visualization and user experience. The team is collaborative and values clean code and user-centered design.",
+    timestamp: "11:20 AM",
   },
   {
     id: 4,
-    sender: 'candidate',
-    content: 'That sounds really interesting! I have 5 years of experience with React and have been working extensively with Next.js for the past 2 years. I\'d love to schedule a time to chat more about this opportunity.',
-    timestamp: '2:45 PM',
+    sender: "candidate",
+    content:
+      "That sounds really interesting! I have 5 years of experience with React and have been working extensively with Next.js for the past 2 years. I'd love to schedule a time to chat more about this opportunity.",
+    timestamp: "2:45 PM",
   },
   {
     id: 5,
-    sender: 'ai',
-    content: 'Perfect! I\'d love to schedule a call with our engineering team. Are you available this Tuesday at 4 PM? I can send you a calendar invite with all the details.',
-    timestamp: '3:00 PM',
+    sender: "ai",
+    content:
+      "Perfect! I'd love to schedule a call with our engineering team. Are you available this Tuesday at 4 PM? I can send you a calendar invite with all the details.",
+    timestamp: "3:00 PM",
   },
   {
     id: 6,
-    sender: 'candidate',
-    content: 'Great! Available Tue 4PM.',
-    timestamp: '3:05 PM',
+    sender: "candidate",
+    content: "Great! Available Tue 4PM.",
+    timestamp: "3:05 PM",
   },
 ];
 
 export default function Inbox() {
-  const [selectedConversation, setSelectedConversation] = useState(conversations[0]);
-  const [messageInput, setMessageInput] = useState('');
+  const [selectedConversation, setSelectedConversation] = useState(
+    conversations[0],
+  );
+  const [messageInput, setMessageInput] = useState("");
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Navigation />
-      
+
       <div className="flex h-[calc(100vh-64px)]">
         {/* Left Sidebar - Conversations */}
         <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
           <div className="p-4 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900 mb-3">Conversations</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">
+              Conversations
+            </h2>
             <div className="relative">
-              <Input 
-                placeholder="Search conversations..."
-                className="pl-3"
-              />
+              <Input placeholder="Search conversations..." className="pl-3" />
             </div>
           </div>
 
@@ -107,7 +113,9 @@ export default function Inbox() {
               <div
                 key={conversation.id}
                 className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${
-                  selectedConversation.id === conversation.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''
+                  selectedConversation.id === conversation.id
+                    ? "bg-blue-50 border-l-4 border-l-blue-600"
+                    : ""
                 }`}
                 onClick={() => setSelectedConversation(conversation)}
               >
@@ -126,7 +134,9 @@ export default function Inbox() {
                         <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500 mb-1">{conversation.job}</p>
+                    <p className="text-xs text-slate-500 mb-1">
+                      {conversation.job}
+                    </p>
                     <p className="text-sm text-slate-600 truncate">
                       {conversation.lastMessage}
                     </p>
@@ -134,8 +144,12 @@ export default function Inbox() {
                       <span className="text-xs text-slate-400">
                         {conversation.timestamp}
                       </span>
-                      <Badge 
-                        variant={conversation.status === 'Active' ? 'default' : 'secondary'}
+                      <Badge
+                        variant={
+                          conversation.status === "Active"
+                            ? "default"
+                            : "secondary"
+                        }
                         className="text-xs"
                       >
                         {conversation.status}
@@ -163,10 +177,12 @@ export default function Inbox() {
                   <h3 className="font-semibold text-slate-900">
                     {selectedConversation.candidate}
                   </h3>
-                  <p className="text-sm text-slate-600">{selectedConversation.job}</p>
+                  <p className="text-sm text-slate-600">
+                    {selectedConversation.job}
+                  </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Button variant="outline" size="sm">
                   <Calendar className="w-4 h-4 mr-2" />
@@ -187,25 +203,31 @@ export default function Inbox() {
           {/* Messages */}
           <div className="flex-1 p-4 overflow-y-auto space-y-4">
             {messages.map((message) => (
-              <div 
+              <div
                 key={message.id}
-                className={`flex ${message.sender === 'ai' ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${message.sender === "ai" ? "justify-start" : "justify-end"}`}
               >
-                <div className={`max-w-[70%] ${
-                  message.sender === 'ai' 
-                    ? 'bg-slate-100 text-slate-900' 
-                    : 'bg-blue-600 text-white'
-                } rounded-lg p-3`}>
+                <div
+                  className={`max-w-[70%] ${
+                    message.sender === "ai"
+                      ? "bg-slate-100 text-slate-900"
+                      : "bg-blue-600 text-white"
+                  } rounded-lg p-3`}
+                >
                   <p className="text-sm leading-relaxed">{message.content}</p>
-                  <p className={`text-xs mt-2 ${
-                    message.sender === 'ai' ? 'text-slate-500' : 'text-blue-100'
-                  }`}>
+                  <p
+                    className={`text-xs mt-2 ${
+                      message.sender === "ai"
+                        ? "text-slate-500"
+                        : "text-blue-100"
+                    }`}
+                  >
                     {message.timestamp}
                   </p>
                 </div>
               </div>
             ))}
-            
+
             {/* Quick Actions */}
             <div className="flex justify-center">
               <div className="bg-slate-100 rounded-lg p-3">
@@ -237,9 +259,9 @@ export default function Inbox() {
                 onChange={(e) => setMessageInput(e.target.value)}
                 className="flex-1"
                 onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     // Handle send message
-                    setMessageInput('');
+                    setMessageInput("");
                   }
                 }}
               />

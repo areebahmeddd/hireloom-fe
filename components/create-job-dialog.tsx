@@ -1,13 +1,19 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 interface CreateJobDialogProps {
   open: boolean;
@@ -17,22 +23,22 @@ interface CreateJobDialogProps {
   editJob?: any; // Job to edit (if provided, dialog is in edit mode)
 }
 
-export function CreateJobDialog({ 
-  open, 
-  onOpenChange, 
-  onJobCreate, 
+export function CreateJobDialog({
+  open,
+  onOpenChange,
+  onJobCreate,
   onJobUpdate,
-  editJob 
+  editJob,
 }: CreateJobDialogProps) {
   const [formData, setFormData] = useState({
-    title: '',
-    location: '',
-    salary: '',
-    description: '',
+    title: "",
+    location: "",
+    salary: "",
+    description: "",
     skills: [] as string[],
-    type: 'Full-time'
+    type: "Full-time",
   });
-  const [skillInput, setSkillInput] = useState('');
+  const [skillInput, setSkillInput] = useState("");
 
   const isEditMode = !!editJob;
 
@@ -40,12 +46,12 @@ export function CreateJobDialog({
   useEffect(() => {
     if (editJob) {
       setFormData({
-        title: editJob.title || '',
-        location: editJob.location || '',
-        salary: editJob.salary || '',
-        description: editJob.description || '',
+        title: editJob.title || "",
+        location: editJob.location || "",
+        salary: editJob.salary || "",
+        description: editJob.description || "",
         skills: editJob.skills || [],
-        type: editJob.type || 'Full-time'
+        type: editJob.type || "Full-time",
       });
     } else {
       resetForm();
@@ -54,9 +60,14 @@ export function CreateJobDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.title || !formData.location || !formData.salary || !formData.description) {
-      alert('Please fill in all required fields');
+
+    if (
+      !formData.title ||
+      !formData.location ||
+      !formData.salary ||
+      !formData.description
+    ) {
+      alert("Please fill in all required fields");
       return;
     }
 
@@ -96,35 +107,35 @@ export function CreateJobDialog({
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      location: '',
-      salary: '',
-      description: '',
+      title: "",
+      location: "",
+      salary: "",
+      description: "",
       skills: [],
-      type: 'Full-time'
+      type: "Full-time",
     });
-    setSkillInput('');
+    setSkillInput("");
   };
 
   const addSkill = () => {
     if (skillInput.trim() && !formData.skills.includes(skillInput.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        skills: [...prev.skills, skillInput.trim()]
+        skills: [...prev.skills, skillInput.trim()],
       }));
-      setSkillInput('');
+      setSkillInput("");
     }
   };
 
   const removeSkill = (skillToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      skills: prev.skills.filter(skill => skill !== skillToRemove)
+      skills: prev.skills.filter((skill) => skill !== skillToRemove),
     }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       addSkill();
     }
@@ -134,9 +145,11 @@ export function CreateJobDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? 'Edit Job' : 'Create New Job'}</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? "Edit Job" : "Create New Job"}
+          </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -145,18 +158,22 @@ export function CreateJobDialog({
                 id="title"
                 placeholder="e.g. Frontend Developer"
                 value={formData.title}
-                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="location">Location *</Label>
               <Input
                 id="location"
                 placeholder="e.g. San Francisco, CA or Remote"
                 value={formData.location}
-                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, location: e.target.value }))
+                }
                 required
               />
             </div>
@@ -169,18 +186,22 @@ export function CreateJobDialog({
                 id="salary"
                 placeholder="e.g. $120k - $160k or $5000/month"
                 value={formData.salary}
-                onChange={(e) => setFormData(prev => ({ ...prev, salary: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, salary: e.target.value }))
+                }
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="type">Job Type</Label>
               <select
                 id="type"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 value={formData.type}
-                onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, type: e.target.value }))
+                }
               >
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
@@ -197,7 +218,12 @@ export function CreateJobDialog({
               placeholder="Describe the role, responsibilities, and requirements..."
               className="min-h-[120px]"
               value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
               required
             />
           </div>
@@ -216,14 +242,18 @@ export function CreateJobDialog({
                 Add
               </Button>
             </div>
-            
+
             {formData.skills.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {formData.skills.map((skill, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
                     {skill}
-                    <X 
-                      className="w-3 h-3 cursor-pointer hover:text-red-500" 
+                    <X
+                      className="w-3 h-3 cursor-pointer hover:text-red-500"
                       onClick={() => removeSkill(skill)}
                     />
                   </Badge>
@@ -233,11 +263,15 @@ export function CreateJobDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              {isEditMode ? 'Update Job' : 'Create Job'}
+              {isEditMode ? "Update Job" : "Create Job"}
             </Button>
           </DialogFooter>
         </form>

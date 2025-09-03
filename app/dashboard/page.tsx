@@ -79,26 +79,26 @@ export default function Dashboard() {
   const [jobs, setJobs] = useState(jobCards);
 
   const handleJobCreate = (newJob: any) => {
-    setJobs(prev => [newJob, ...prev]);
+    setJobs((prev) => [newJob, ...prev]);
   };
 
   // Format current date and time
   const getCurrentDateTime = () => {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
     };
     const timeOptions: Intl.DateTimeFormatOptions = {
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true,
     };
 
-    const date = now.toLocaleDateString('en-US', options);
-    const time = now.toLocaleTimeString('en-US', timeOptions);
+    const date = now.toLocaleDateString("en-US", options);
+    const time = now.toLocaleTimeString("en-US", timeOptions);
 
     return `${date} | ${time}`;
   };
@@ -114,9 +114,7 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold text-slate-900 mb-2">
               Welcome, Shivansh
             </h1>
-            <p className="text-slate-600">
-              {getCurrentDateTime()}
-            </p>
+            <p className="text-slate-600">{getCurrentDateTime()}</p>
           </div>
 
           {/* Quick Metrics */}

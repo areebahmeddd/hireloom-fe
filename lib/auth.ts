@@ -1,12 +1,12 @@
-import { 
-  createUserWithEmailAndPassword, 
+import {
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  User
-} from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from './firebase';
+  User,
+} from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
 export interface UserProfile {
   uid: string;
@@ -34,16 +34,16 @@ export const signUpWithEmail = async (userData: SignUpData): Promise<User> => {
   try {
     // Create user with Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(
-      auth, 
-      userData.email, 
-      userData.password
+      auth,
+      userData.email,
+      userData.password,
     );
-    
+
     const user = userCredential.user;
 
     // Update the user's display name
     await updateProfile(user, {
-      displayName: userData.name
+      displayName: userData.name,
     });
 
     // Create user profile in Firestore
@@ -56,11 +56,11 @@ export const signUpWithEmail = async (userData: SignUpData): Promise<User> => {
       updatedAt: new Date(),
     };
 
-    await setDoc(doc(db, 'users', user.uid), userProfile);
+    await setDoc(doc(db, "users", user.uid), userProfile);
 
     return user;
   } catch (error) {
-    console.error('Error signing up:', error);
+    console.error("Error signing up:", error);
     throw error;
   }
 };
@@ -69,13 +69,13 @@ export const signUpWithEmail = async (userData: SignUpData): Promise<User> => {
 export const signInWithEmail = async (userData: SignInData): Promise<User> => {
   try {
     const userCredential = await signInWithEmailAndPassword(
-      auth, 
-      userData.email, 
-      userData.password
+      auth,
+      userData.email,
+      userData.password,
     );
     return userCredential.user;
   } catch (error) {
-    console.error('Error signing in:', error);
+    console.error("Error signing in:", error);
     throw error;
   }
 };
@@ -85,38 +85,47 @@ export const signOutUser = async (): Promise<void> => {
   try {
     await signOut(auth);
   } catch (error) {
-    console.error('Error signing out:', error);
+    console.error("Error signing out:", error);
     throw error;
   }
 };
 
 // Get user profile from Firestore
-export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+export const getUserProfile = async (
+  uid: string,
+): Promise<UserProfile | null> => {
   try {
-    const docRef = doc(db, 'users', uid);
+    const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       return docSnap.data() as UserProfile;
     } else {
       return null;
     }
   } catch (error) {
-    console.error('Error getting user profile:', error);
+    console.error("Error getting user profile:", error);
     throw error;
   }
 };
 
 // Update user profile
-export const updateUserProfile = async (uid: string, updates: Partial<UserProfile>): Promise<void> => {
+export const updateUserProfile = async (
+  uid: string,
+  updates: Partial<UserProfile>,
+): Promise<void> => {
   try {
-    const userRef = doc(db, 'users', uid);
-    await setDoc(userRef, { 
-      ...updates, 
-      updatedAt: new Date() 
-    }, { merge: true });
+    const userRef = doc(db, "users", uid);
+    await setDoc(
+      userRef,
+      {
+        ...updates,
+        updatedAt: new Date(),
+      },
+      { merge: true },
+    );
   } catch (error) {
-    console.error('Error updating user profile:', error);
+    console.error("Error updating user profile:", error);
     throw error;
   }
 };

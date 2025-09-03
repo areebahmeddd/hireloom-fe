@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { HeroSection } from '@/components/landing/hero-section';
-import { SignInDialog } from '@/components/auth/sign-in-dialog';
-import { SignUpDialog } from '@/components/auth/sign-up-dialog';
+import { useState } from "react";
+import { HeroSection } from "@/components/landing/hero-section";
+import { SignInDialog } from "@/components/auth/sign-in-dialog";
+import { SignUpDialog } from "@/components/auth/sign-up-dialog";
 
 export default function LandingPage() {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -26,15 +26,15 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       <HeroSection onGetStarted={handleGetStarted} />
-      
-      <SignInDialog 
-        open={showSignIn} 
+
+      <SignInDialog
+        open={showSignIn}
         onOpenChange={setShowSignIn}
         onSwitchToSignUp={switchToSignUp}
       />
-      
-      <SignUpDialog 
-        open={showSignUp} 
+
+      <SignUpDialog
+        open={showSignUp}
         onOpenChange={setShowSignUp}
         onSwitchToSignIn={switchToSignIn}
       />

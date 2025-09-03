@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { getUserProfile, UserProfile } from '@/lib/auth';
+import { useState, useEffect } from "react";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { getUserProfile, UserProfile } from "@/lib/auth";
 
 export interface AuthState {
   user: User | null;
@@ -34,7 +34,7 @@ export const useAuth = () => {
             user,
             profile: null,
             loading: false,
-            error: 'Failed to load user profile',
+            error: "Failed to load user profile",
           });
         }
       } else {
