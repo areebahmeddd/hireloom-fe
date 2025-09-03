@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Navigation } from "@/components/navigation";
 import { ProtectedRoute } from "@/components/protected-route";
 import { CreateJobDialog } from "@/components/create-job-dialog";
+import { AptitudeTestResults } from "@/components/aptitude-test-results";
 
 const jobCards = [
   {
@@ -179,6 +180,11 @@ export default function Dashboard() {
               </Card>
             ))}
           </div>
+        </div>
+
+        {/* Aptitude Test Results */}
+        <div className="mb-8">
+          <AptitudeTestResults showAllJobs={true} />
         </div>
 
         {/* Recent Activity */}

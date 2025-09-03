@@ -77,10 +77,20 @@ export default function JobManagement() {
   const [jobs, setJobs] = useState(initialJobs);
   const [selectedJob, setSelectedJob] = useState(initialJobs[0]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleJobCreate = (newJob: any) => {
     setJobs(prev => [newJob, ...prev]);
     setSelectedJob(newJob);
+  };
+
+  const handleJobUpdate = (updatedJob: any) => {
+    setJobs(prev => prev.map(job => job.id === updatedJob.id ? updatedJob : job));
+    setSelectedJob(updatedJob);
+  };
+
+  const handleEditJob = () => {
+    setIsEditDialogOpen(true);
   };
 
   return (
@@ -157,7 +167,7 @@ export default function JobManagement() {
                   <Clock className="w-4 h-4 mr-1" />
                   Created {formatTimeAgo(selectedJob.createdAt)}
                 </div>
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleEditJob}>
                   <Edit3 className="w-4 h-4 mr-2" />
                   Edit Job
                 </Button>
@@ -221,6 +231,14 @@ export default function JobManagement() {
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         onJobCreate={handleJobCreate}
+      />
+      
+      <CreateJobDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onJobCreate={handleJobCreate}
+        onJobUpdate={handleJobUpdate}
+        editJob={selectedJob}
       />
     </div>
   );

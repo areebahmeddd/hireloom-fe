@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import { Star, ExternalLink, Github, Linkedin, Mail, Phone, Calendar, MessageSquare, Code } from 'lucide-react';
+import { Star, ExternalLink, Github, Linkedin, Mail, Phone, Calendar, MessageSquare, Code, Brain } from 'lucide-react';
+import { CreateAptitudeTestDialog } from './create-aptitude-test-dialog';
 
 interface Candidate {
   id: number;
@@ -204,6 +205,21 @@ export function CandidateTable({
 }: CandidateTableProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [sortBy, setSortBy] = useState<string>('score');
+  const [showAptitudeTestDialog, setShowAptitudeTestDialog] = useState(false);
+  const [testCandidate, setTestCandidate] = useState<Candidate | null>(null);
+
+  // Mock job data - in real app, this would come from props or API
+  const jobData = {
+    id: jobId?.toString() || '1',
+    title: 'Frontend Developer', // This should come from actual job data
+    description: 'We are looking for an experienced Frontend Developer to join our team...',
+    skills: ['React', 'TypeScript', 'Next.js', 'CSS', 'JavaScript'],
+  };
+
+  const handleSendAptitudeTest = (candidate: Candidate) => {
+    setTestCandidate(candidate);
+    setShowAptitudeTestDialog(true);
+  };
 
   // Filter candidates based on multiple criteria
   let filteredCandidates = jobId 
@@ -354,6 +370,17 @@ export function CandidateTable({
                         <Button variant="ghost" size="sm">
                           <Calendar className="w-4 h-4" />
                         </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSendAptitudeTest(candidate);
+                          }}
+                          title="Send Aptitude Test"
+                        >
+                          <Brain className="w-4 h-4" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -502,6 +529,18 @@ export function CandidateTable({
           )}
         </SheetContent>
       </Sheet>
+
+      {/* Aptitude Test Dialog */}
+      <CreateAptitudeTestDialog
+        open={showAptitudeTestDialog}
+        onOpenChange={setShowAptitudeTestDialog}
+        jobData={jobData}
+        candidate={testCandidate ? {
+          id: testCandidate.id.toString(),
+          name: testCandidate.name,
+          email: testCandidate.email,
+        } : undefined}
+      />
     </>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,9 +13,17 @@ interface CreateJobDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onJobCreate: (job: any) => void;
+  onJobUpdate?: (job: any) => void;
+  editJob?: any; // Job to edit (if provided, dialog is in edit mode)
 }
 
-export function CreateJobDialog({ open, onOpenChange, onJobCreate }: CreateJobDialogProps) {
+export function CreateJobDialog({ 
+  open, 
+  onOpenChange, 
+  onJobCreate, 
+  onJobUpdate,
+  editJob 
+}: CreateJobDialogProps) {
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -26,6 +34,24 @@ export function CreateJobDialog({ open, onOpenChange, onJobCreate }: CreateJobDi
   });
   const [skillInput, setSkillInput] = useState('');
 
+  const isEditMode = !!editJob;
+
+  // Populate form data when editing
+  useEffect(() => {
+    if (editJob) {
+      setFormData({
+        title: editJob.title || '',
+        location: editJob.location || '',
+        salary: editJob.salary || '',
+        description: editJob.description || '',
+        skills: editJob.skills || [],
+        type: editJob.type || 'Full-time'
+      });
+    } else {
+      resetForm();
+    }
+  }, [editJob, open]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -34,21 +60,36 @@ export function CreateJobDialog({ open, onOpenChange, onJobCreate }: CreateJobDi
       return;
     }
 
-    const newJob = {
-      id: Date.now(), // Simple ID generation
-      title: formData.title,
-      createdAt: new Date(),
-      description: formData.description,
-      location: formData.location,
-      salary: formData.salary,
-      type: formData.type,
-      skills: formData.skills,
-      candidates: 0,
-      contacted: 0,
-      scheduled: 0,
-    };
+    if (isEditMode && editJob && onJobUpdate) {
+      // Update existing job
+      const updatedJob = {
+        ...editJob,
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        salary: formData.salary,
+        type: formData.type,
+        skills: formData.skills,
+      };
+      onJobUpdate(updatedJob);
+    } else {
+      // Create new job
+      const newJob = {
+        id: Date.now(), // Simple ID generation
+        title: formData.title,
+        createdAt: new Date(),
+        description: formData.description,
+        location: formData.location,
+        salary: formData.salary,
+        type: formData.type,
+        skills: formData.skills,
+        candidates: 0,
+        contacted: 0,
+        scheduled: 0,
+      };
+      onJobCreate(newJob);
+    }
 
-    onJobCreate(newJob);
     resetForm();
     onOpenChange(false);
   };
@@ -93,7 +134,7 @@ export function CreateJobDialog({ open, onOpenChange, onJobCreate }: CreateJobDi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create New Job</DialogTitle>
+          <DialogTitle>{isEditMode ? 'Edit Job' : 'Create New Job'}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -196,7 +237,7 @@ export function CreateJobDialog({ open, onOpenChange, onJobCreate }: CreateJobDi
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              Create Job
+              {isEditMode ? 'Update Job' : 'Create Job'}
             </Button>
           </DialogFooter>
         </form>
