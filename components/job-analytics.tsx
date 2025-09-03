@@ -19,8 +19,8 @@ export function JobAnalytics({ job }: JobAnalyticsProps) {
       label: "Total Candidates",
       value: job.candidates,
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
     {
       label: "Contacted",
@@ -87,7 +87,7 @@ export function JobAnalytics({ job }: JobAnalyticsProps) {
               </span>
             </div>
             <div className="w-full bg-slate-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full w-full"></div>
+              <div className="bg-primary h-2 rounded-full w-full"></div>
             </div>
 
             <div className="flex items-center justify-between">
@@ -141,7 +141,7 @@ export function JobAnalytics({ job }: JobAnalyticsProps) {
                     <div className="flex items-center space-x-2">
                       <div className="w-20 bg-slate-200 rounded-full h-1.5">
                         <div
-                          className="bg-blue-600 h-1.5 rounded-full"
+                          className="bg-primary h-1.5 rounded-full"
                           style={{ width: `${100 - index * 15}%` }}
                         ></div>
                       </div>
@@ -172,7 +172,7 @@ export function JobAnalytics({ job }: JobAnalyticsProps) {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-slate-900">
                     Resume analysis completed

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Marquee from "@/components/ui/marquee";
 import {
   ArrowRight,
   Play,
@@ -26,6 +27,55 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     { number: "24h", label: "Average Time to Match" },
   ];
 
+  const companies = [
+    "Google",
+    "Microsoft",
+    "Stripe",
+    "Airbnb",
+    "Netflix",
+    "Tesla",
+    "Meta",
+    "Amazon",
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Head of Talent @ TechCorp",
+      content:
+        "Hireloom reduced our time-to-hire by 60%. The AI matching is incredibly accurate.",
+      avatar: "SC",
+    },
+    {
+      name: "Raj Patel",
+      role: "Recruiting Manager @ InnovateLabs",
+      content:
+        "Best hiring platform we've used. The candidate quality is outstanding.",
+      avatar: "RP",
+    },
+    {
+      name: "Emily Johnson",
+      role: "HR Director @ StartupXYZ",
+      content:
+        "Game-changer for our recruiting process. Highly recommend to any growing team.",
+      avatar: "EJ",
+    },
+    {
+      name: "Michael Brown",
+      role: "Talent Acquisition @ BigTech",
+      content:
+        "The automated screening saves us hours every week. Fantastic tool!",
+      avatar: "MB",
+    },
+    {
+      name: "Priya Sharma",
+      role: "People Operations @ ScaleUp",
+      content:
+        "Finally found the perfect hiring solution. The analytics are incredible.",
+      avatar: "PS",
+    },
+  ];
+
   const features = [
     "AI-powered candidate matching",
     "Automated screening process",
@@ -34,10 +84,13 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const statInterval = setInterval(() => {
       setCurrentStat((prev) => (prev + 1) % stats.length);
     }, 3000);
-    return () => clearInterval(interval);
+
+    return () => {
+      clearInterval(statInterval);
+    };
   }, [stats.length]);
 
   return (
@@ -68,7 +121,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
               <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight fade-in-up">
                 Find the perfect{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
                   talent
                 </span>{" "}
                 for your team
@@ -98,7 +151,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-lg border border-white/30 backdrop-blur-sm component-transition"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl component-transition"
                 onClick={onGetStarted}
               >
                 Get Started Free
@@ -115,19 +168,20 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               </Button>
             </div>
 
-            {/* Trust Indicators */}
+            {/* Trust Indicators - Small version like before */}
             <div className="pt-8 border-t border-white/20">
               <p className="text-sm text-white/70 mb-4">
                 Trusted by leading companies
               </p>
-              <div className="flex items-center space-x-8 opacity-60">
-                <div className="text-2xl font-bold text-white/60">Google</div>
-                <div className="text-2xl font-bold text-white/60">
-                  Microsoft
-                </div>
-                <div className="text-2xl font-bold text-white/60">Stripe</div>
-                <div className="text-2xl font-bold text-white/60">Airbnb</div>
-              </div>
+              <Marquee pauseOnHover className="[--duration:20s]">
+                {companies.map((company, index) => (
+                  <div key={index} className="px-4">
+                    <span className="text-xl font-semibold text-white/80">
+                      {company}
+                    </span>
+                  </div>
+                ))}
+              </Marquee>
             </div>
           </div>
 
@@ -150,7 +204,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                     Hiring Dashboard
                   </h3>
                   <div className="flex items-center space-x-2">
-                    <Users className="w-5 h-5 text-blue-600" />
+                    <Users className="w-5 h-5 text-primary" />
                     <span className="text-sm text-slate-600">
                       24 Active Jobs
                     </span>
@@ -171,7 +225,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                       <div
                         className={`text-2xl font-bold ${
                           index === currentStat
-                            ? "text-blue-600"
+                            ? "text-primary"
                             : "text-slate-900"
                         }`}
                       >
@@ -224,6 +278,76 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             <div className="absolute -bottom-4 -left-4 bg-white text-black p-3 rounded-full shadow-lg animate-pulse">
               <Users className="w-6 h-6" />
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* HR Testimonials - Final Section */}
+      <div className="relative bg-gradient-to-b from-slate-900 via-slate-800 to-emerald-900 py-24">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-emerald-500/5 rounded-full blur-3xl animate-pulse"></div>
+          <div
+            className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-teal-500/5 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: "2s" }}
+          ></div>
+        </div>
+
+        <div className="relative container mx-auto px-6">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-6 py-3 bg-slate-700/50 backdrop-blur-sm rounded-full border border-slate-500/30 text-slate-200 text-sm font-medium mb-8">
+              <CheckCircle className="w-5 h-5 mr-2 text-emerald-400" />
+              Real Customer Stories
+            </div>
+            <h2 className="text-5xl font-bold text-white mb-6">
+              Loved by <span className="text-emerald-400">HR teams</span>{" "}
+              worldwide
+            </h2>
+            <p className="text-slate-300 text-xl max-w-3xl mx-auto leading-relaxed">
+              Don't just take our word for it. See what recruiting professionals
+              around the globe are saying about their experience with Hireloom.
+            </p>
+          </div>
+
+          <div className="relative">
+            {/* Gradient overlays for seamless scrolling effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
+
+            <Marquee pauseOnHover className="[--duration:45s] py-8">
+              {testimonials.map((testimonial, index) => (
+                <div key={index} className="mx-6">
+                  <div className="group bg-white/10 backdrop-blur-xl rounded-3xl p-8 border-2 border-white/10 hover:bg-white/15 hover:border-emerald-400/30 transition-all duration-500 w-96 shadow-2xl hover:shadow-emerald-500/10">
+                    <div className="flex items-center mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg">
+                        {testimonial.avatar}
+                      </div>
+                      <div className="ml-6">
+                        <h4 className="font-bold text-white text-lg group-hover:text-emerald-100 transition-colors">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-slate-400 text-sm font-medium">
+                          {testimonial.role}
+                        </p>
+                      </div>
+                    </div>
+                    <blockquote className="text-slate-200 leading-relaxed text-lg italic">
+                      "{testimonial.content}"
+                    </blockquote>
+                    <div className="flex justify-end mt-4">
+                      <div className="flex space-x-1">
+                        {[...Array(5)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="w-2 h-2 bg-emerald-400 rounded-full"
+                          ></div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Marquee>
           </div>
         </div>
       </div>

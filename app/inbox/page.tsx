@@ -22,7 +22,7 @@ const conversations = [
   },
   {
     id: 2,
-    candidate: "Sameer Jain",
+    candidate: "Sneha Jain",
     job: "Backend Developer",
     status: "Scheduled",
     lastMessage: "Looking forward to our meeting!",
@@ -93,14 +93,14 @@ export default function Inbox() {
   const [messageInput, setMessageInput] = useState("");
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
 
       <div className="flex h-[calc(100vh-64px)]">
         {/* Left Sidebar - Conversations */}
-        <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
-          <div className="p-4 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900 mb-3">
+        <div className="w-80 bg-card border-r border-border flex flex-col">
+          <div className="p-4 border-b border-border">
+            <h2 className="text-lg font-semibold text-foreground mb-3">
               Conversations
             </h2>
             <div className="relative">
@@ -114,7 +114,7 @@ export default function Inbox() {
                 key={conversation.id}
                 className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${
                   selectedConversation.id === conversation.id
-                    ? "bg-blue-50 border-l-4 border-l-blue-600"
+                    ? "bg-primary/5 border-l-4 border-l-primary"
                     : ""
                 }`}
                 onClick={() => setSelectedConversation(conversation)}
@@ -131,7 +131,7 @@ export default function Inbox() {
                         {conversation.candidate}
                       </h3>
                       {conversation.unread && (
-                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
                       )}
                     </div>
                     <p className="text-xs text-slate-500 mb-1">
@@ -210,16 +210,16 @@ export default function Inbox() {
                 <div
                   className={`max-w-[70%] ${
                     message.sender === "ai"
-                      ? "bg-slate-100 text-slate-900"
-                      : "bg-blue-600 text-white"
+                      ? "bg-muted text-foreground"
+                      : "bg-primary text-primary-foreground"
                   } rounded-lg p-3`}
                 >
                   <p className="text-sm leading-relaxed">{message.content}</p>
                   <p
                     className={`text-xs mt-2 ${
                       message.sender === "ai"
-                        ? "text-slate-500"
-                        : "text-blue-100"
+                        ? "text-muted-foreground"
+                        : "text-primary-foreground/70"
                     }`}
                   >
                     {message.timestamp}
@@ -230,8 +230,10 @@ export default function Inbox() {
 
             {/* Quick Actions */}
             <div className="flex justify-center">
-              <div className="bg-slate-100 rounded-lg p-3">
-                <p className="text-xs text-slate-600 mb-2">Quick Actions</p>
+              <div className="bg-muted rounded-lg p-3">
+                <p className="text-xs text-muted-foreground mb-2">
+                  Quick Actions
+                </p>
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" className="text-xs">
                     <Calendar className="w-3 h-3 mr-1" />
@@ -251,7 +253,7 @@ export default function Inbox() {
           </div>
 
           {/* Message Input */}
-          <div className="p-4 border-t border-slate-200 bg-white">
+          <div className="p-4 border-t border-border bg-card">
             <div className="flex items-center space-x-3">
               <Input
                 placeholder="Type your message..."
@@ -265,7 +267,7 @@ export default function Inbox() {
                   }
                 }}
               />
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+              <Button size="sm" className="bg-primary hover:bg-primary/90">
                 <Send className="w-4 h-4" />
               </Button>
             </div>

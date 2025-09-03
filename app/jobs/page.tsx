@@ -141,18 +141,18 @@ export default function JobManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
 
       <div className="flex h-[calc(100vh-64px)]">
         {/* Left Sidebar - Job List */}
-        <div className="w-80 bg-white border-r border-slate-200 p-6 overflow-y-auto">
+        <div className="w-80 bg-card border-r border-border p-6 overflow-y-auto">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Active Jobs
             </h2>
             <Button
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-primary hover:bg-primary/90"
               onClick={() => setIsCreateDialogOpen(true)}
             >
               <Edit3 className="w-4 h-4 mr-2" />
@@ -165,20 +165,20 @@ export default function JobManagement() {
               <Card
                 key={job.id}
                 className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  selectedJob.id === job.id
-                    ? "ring-2 ring-blue-500 shadow-md"
+                  selectedJob?.id === job.id
+                    ? "ring-2 ring-primary shadow-md"
                     : ""
                 }`}
                 onClick={() => setSelectedJob(job)}
               >
                 <CardContent className="p-4">
                   <div className="mb-2">
-                    <h3 className="font-medium text-slate-900">{job.title}</h3>
+                    <h3 className="font-medium text-foreground">{job.title}</h3>
                   </div>
-                  <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                     {job.description}
                   </p>
-                  <div className="flex items-center text-xs text-slate-500">
+                  <div className="flex items-center text-xs text-muted-foreground">
                     <Users className="w-3 h-3 mr-1" />
                     {job.candidates} candidates
                   </div>
@@ -189,17 +189,17 @@ export default function JobManagement() {
         </div>
 
         {/* Right Panel - Job Details */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 p-6 overflow-y-auto bg-background">
           {selectedJob ? (
             <>
               {/* Job Header */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-1">
+                    <h1 className="text-2xl font-bold text-foreground mb-1">
                       {selectedJob.title}
                     </h1>
-                    <div className="flex items-center space-x-4 text-sm text-slate-600">
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 mr-1" />
                         {selectedJob.location}
@@ -212,7 +212,7 @@ export default function JobManagement() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center text-sm text-slate-500">
+                    <div className="flex items-center text-sm text-muted-foreground">
                       <Clock className="w-4 h-4 mr-1" />
                       Created {formatTimeAgo(selectedJob.createdAt)}
                     </div>
@@ -221,6 +221,7 @@ export default function JobManagement() {
                         variant="outline"
                         size="sm"
                         onClick={handleEditJob}
+                        className="hover:bg-primary hover:text-primary-foreground"
                       >
                         <Edit3 className="w-3 h-3 mr-1" />
                         Edit
@@ -296,16 +297,19 @@ export default function JobManagement() {
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="max-w-md">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+                  <Edit3 className="w-8 h-8 text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground mb-4">
                   No Jobs Available
                 </h2>
-                <p className="text-slate-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   You don't have any job postings yet. Create your first job to
                   get started with recruiting.
                 </p>
                 <Button
                   onClick={() => setIsCreateDialogOpen(true)}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   <Edit3 className="w-4 h-4 mr-2" />
                   Create Your First Job

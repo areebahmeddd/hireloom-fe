@@ -75,7 +75,7 @@ const allCandidates: Candidate[] = [
     score: 89,
     skills: ["Vue.js", "JavaScript", "CSS"],
     contactStatus: "Contacted",
-    statusColor: "bg-blue-100 text-blue-700",
+    statusColor: "bg-primary/10 text-primary",
     experience: "4 years",
     location: "Mumbai, Maharashtra",
     email: "rohit.patel@email.com",
@@ -133,7 +133,7 @@ const allCandidates: Candidate[] = [
     score: 91,
     skills: ["Python", "Django", "Redis"],
     contactStatus: "Contacted",
-    statusColor: "bg-blue-100 text-blue-700",
+    statusColor: "bg-primary/10 text-primary",
     experience: "5 years",
     location: "Hyderabad, Telangana",
     email: "ananya.joshi@email.com",
@@ -191,7 +191,7 @@ const allCandidates: Candidate[] = [
     score: 92,
     skills: ["Sketch", "Prototyping", "User Testing"],
     contactStatus: "Contacted",
-    statusColor: "bg-blue-100 text-blue-700",
+    statusColor: "bg-primary/10 text-primary",
     experience: "6 years",
     location: "Kochi, Kerala",
     email: "meera.nair@email.com",
@@ -341,7 +341,7 @@ export function CandidateTable({
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-3">
                         <Avatar>
-                          <AvatarFallback className="bg-blue-100 text-blue-700">
+                          <AvatarFallback className="bg-primary/10 text-primary">
                             {candidate.avatar}
                           </AvatarFallback>
                         </Avatar>
@@ -436,7 +436,7 @@ export function CandidateTable({
               <SheetHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="w-16 h-16">
-                    <AvatarFallback className="bg-blue-100 text-blue-700 text-xl">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xl">
                       {selectedCandidate.avatar}
                     </AvatarFallback>
                   </Avatar>

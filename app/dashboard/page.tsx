@@ -25,7 +25,7 @@ const jobCards = [
     id: 1,
     title: "Frontend Developer",
     status: "Analysis",
-    statusColor: "bg-blue-100 text-blue-700",
+    statusColor: "bg-primary/10 text-primary",
     resumes: 20,
     description: "React, TypeScript, Next.js",
     progress: 65,
@@ -105,16 +105,16 @@ export default function Dashboard() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-background">
         <Navigation />
 
         <main className="max-w-7xl mx-auto px-6 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               Welcome, Shivansh
             </h1>
-            <p className="text-slate-600">{getCurrentDateTime()}</p>
+            <p className="text-muted-foreground">{getCurrentDateTime()}</p>
           </div>
 
           {/* Quick Metrics */}
@@ -127,18 +127,18 @@ export default function Dashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-slate-600 mb-1">
+                      <p className="text-sm text-muted-foreground mb-1">
                         {metric.label}
                       </p>
-                      <p className="text-2xl font-bold text-slate-900">
+                      <p className="text-2xl font-bold text-foreground">
                         {metric.value}
                       </p>
-                      <p className="text-sm text-green-600 mt-1">
+                      <p className="text-sm text-success mt-1">
                         {metric.change}
                       </p>
                     </div>
-                    <div className="p-3 bg-blue-100 rounded-full">
-                      <metric.icon className="w-6 h-6 text-blue-600" />
+                    <div className="p-3 bg-primary/10 rounded-full">
+                      <metric.icon className="w-6 h-6 text-primary" />
                     </div>
                   </div>
                 </CardContent>
@@ -149,11 +149,11 @@ export default function Dashboard() {
           {/* Job Postings */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-slate-900">
+              <h2 className="text-xl font-semibold text-foreground">
                 Active Job Postings
               </h2>
               <Button
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-primary hover:bg-primary/90"
                 onClick={() => setShowCreateJobDialog(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -169,40 +169,42 @@ export default function Dashboard() {
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <CardTitle className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                         <Link
                           href="/jobs"
-                          className="hover:text-blue-600 transition-colors cursor-pointer"
+                          className="hover:text-primary transition-colors cursor-pointer"
                         >
                           {job.title}
                         </Link>
                       </CardTitle>
                       <Badge className={job.statusColor}>{job.status}</Badge>
                     </div>
-                    <p className="text-sm text-slate-600">{job.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {job.description}
+                    </p>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-600">Progress</span>
-                        <span className="font-medium text-slate-900">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-medium text-foreground">
                           {job.progress}%
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div className="w-full bg-secondary rounded-full h-2">
                         <div
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-primary h-2 rounded-full transition-all duration-300"
                           style={{ width: `${job.progress}%` }}
                         ></div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center text-sm text-slate-600">
+                        <div className="flex items-center text-sm text-muted-foreground">
                           <FileText className="w-4 h-4 mr-1" />
                           {job.resumes} resumes
                         </div>
                         <Link
                           href="/jobs"
-                          className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                          className="text-primary hover:text-primary/80 text-sm font-medium"
                         >
                           View Details →
                         </Link>
@@ -223,7 +225,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Clock className="w-5 h-5 mr-2 text-blue-600" />
+                <Clock className="w-5 h-5 mr-2 text-primary" />
                 Recent Activity
               </CardTitle>
             </CardHeader>
@@ -241,7 +243,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <TrendingUp className="w-5 h-5 text-blue-500" />
+                  <TrendingUp className="w-5 h-5 text-primary" />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-slate-900">
                       15 new resumes analyzed for Backend Developer

@@ -19,16 +19,16 @@ export default function Candidates() {
   const [jobFilter, setJobFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             All Candidates
           </h1>
-          <p className="text-slate-600">
+          <p className="text-muted-foreground">
             Manage and track all candidates across all job postings
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function Candidates() {
           {/* Left side: Search bar + filters */}
           <div className="flex items-center space-x-4 flex-1">
             <div className="relative flex-1 min-w-0">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search candidates..."
                 className="pl-10 w-full"

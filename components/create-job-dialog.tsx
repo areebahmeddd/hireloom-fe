@@ -169,7 +169,7 @@ export function CreateJobDialog({
               <Label htmlFor="location">Location *</Label>
               <Input
                 id="location"
-                placeholder="e.g. San Francisco, CA or Remote"
+                placeholder="e.g. Mumbai, Maharashtra or Remote"
                 value={formData.location}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, location: e.target.value }))
@@ -184,7 +184,7 @@ export function CreateJobDialog({
               <Label htmlFor="salary">Salary/Stipend *</Label>
               <Input
                 id="salary"
-                placeholder="e.g. $120k - $160k or $5000/month"
+                placeholder="e.g. ₹12L - ₹18L or ₹50,000/month"
                 value={formData.salary}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, salary: e.target.value }))
@@ -270,7 +270,7 @@ export function CreateJobDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            <Button type="submit" className="bg-primary hover:bg-primary/90">
               {isEditMode ? "Update Job" : "Create Job"}
             </Button>
           </DialogFooter>

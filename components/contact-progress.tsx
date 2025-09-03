@@ -52,7 +52,7 @@ const contactActivities = [
     action: "Interview scheduled",
     status: "Confirmed",
     timestamp: "1 day ago",
-    statusColor: "bg-blue-100 text-blue-700",
+    statusColor: "bg-primary/10 text-primary",
     icon: Calendar,
   },
   {
@@ -83,8 +83,8 @@ export function ContactProgress({ job }: ContactProgressProps) {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-full">
-                <Mail className="w-4 h-4 text-blue-600" />
+              <div className="p-2 bg-primary/10 rounded-full">
+                <Mail className="w-4 h-4 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-slate-600">Contacted</p>
@@ -141,7 +141,7 @@ export function ContactProgress({ job }: ContactProgressProps) {
               >
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarFallback className="bg-blue-100 text-blue-700">
+                    <AvatarFallback className="bg-primary/10 text-primary">
                       {activity.avatar}
                     </AvatarFallback>
                   </Avatar>
@@ -193,7 +193,7 @@ export function ContactProgress({ job }: ContactProgressProps) {
               {/* Candidate Info */}
               <div className="flex items-center space-x-4">
                 <Avatar className="w-12 h-12">
-                  <AvatarFallback className="bg-blue-100 text-blue-700">
+                  <AvatarFallback className="bg-primary/10 text-primary">
                     {selectedActivity.avatar}
                   </AvatarFallback>
                 </Avatar>
