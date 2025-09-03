@@ -121,11 +121,15 @@ export default function JobManagement() {
   };
 
   const handleDeleteJob = () => {
-    if (confirm(`Are you sure you want to delete "${selectedJob.title}"? This action cannot be undone.`)) {
+    if (
+      confirm(
+        `Are you sure you want to delete "${selectedJob.title}"? This action cannot be undone.`,
+      )
+    ) {
       // Remove the job from the jobs array
-      const updatedJobs = jobs.filter(job => job.id !== selectedJob.id);
+      const updatedJobs = jobs.filter((job) => job.id !== selectedJob.id);
       setJobs(updatedJobs);
-      
+
       // If we deleted the selected job, select the first available job or null
       if (updatedJobs.length > 0) {
         setSelectedJob(updatedJobs[0]);
@@ -168,12 +172,8 @@ export default function JobManagement() {
                 onClick={() => setSelectedJob(job)}
               >
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="mb-2">
                     <h3 className="font-medium text-slate-900">{job.title}</h3>
-                    <div className="flex items-center text-xs text-slate-500">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {formatTimeAgo(job.createdAt)}
-                    </div>
                   </div>
                   <p className="text-sm text-slate-600 mb-3 line-clamp-2">
                     {job.description}
@@ -194,106 +194,116 @@ export default function JobManagement() {
             <>
               {/* Job Header */}
               <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-1">
-                  {selectedJob.title}
-                </h1>
-                <div className="flex items-center space-x-4 text-sm text-slate-600">
-                  <div className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {selectedJob.location}
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h1 className="text-2xl font-bold text-slate-900 mb-1">
+                      {selectedJob.title}
+                    </h1>
+                    <div className="flex items-center space-x-4 text-sm text-slate-600">
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {selectedJob.location}
+                      </div>
+                      <div className="flex items-center">
+                        <DollarSign className="w-4 h-4 mr-1" />
+                        {selectedJob.salary}
+                      </div>
+                      <Badge variant="outline">{selectedJob.type}</Badge>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <DollarSign className="w-4 h-4 mr-1" />
-                    {selectedJob.salary}
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center text-sm text-slate-500">
+                      <Clock className="w-4 h-4 mr-1" />
+                      Created {formatTimeAgo(selectedJob.createdAt)}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleEditJob}
+                      >
+                        <Edit3 className="w-3 h-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleDeleteJob}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                  <Badge variant="outline">{selectedJob.type}</Badge>
                 </div>
+
+                {/* Job Description */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Job Description</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-700 mb-4">
+                      {selectedJob.description}
+                    </p>
+                    <div className="space-y-2">
+                      <h4 className="font-medium text-slate-900">
+                        Required Skills
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedJob.skills.map((skill, index) => (
+                          <Badge key={index} variant="secondary">
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="flex items-center text-sm text-slate-500">
-                  <Clock className="w-4 h-4 mr-1" />
-                  Created {formatTimeAgo(selectedJob.createdAt)}
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline" onClick={handleEditJob}>
-                    <Edit3 className="w-4 h-4 mr-2" />
-                    Edit Job
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    onClick={handleDeleteJob}
-                    className="bg-red-600 hover:bg-red-700"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete Job
-                  </Button>
-                </div>
-              </div>
-            </div>
 
-            {/* Job Description */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Job Description</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-700 mb-4">{selectedJob.description}</p>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-slate-900">
-                    Required Skills
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedJob.skills.map((skill, index) => (
-                      <Badge key={index} variant="secondary">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              {/* Tabs */}
+              <Tabs defaultValue="candidates" className="space-y-6">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="candidates" className="flex items-center">
+                    <Users className="w-4 h-4 mr-2" />
+                    Candidates
+                  </TabsTrigger>
+                  <TabsTrigger value="analytics" className="flex items-center">
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    Analytics
+                  </TabsTrigger>
+                  <TabsTrigger value="progress" className="flex items-center">
+                    <Clock className="w-4 h-4 mr-2" />
+                    Contact Progress
+                  </TabsTrigger>
+                </TabsList>
 
-          {/* Tabs */}
-          <Tabs defaultValue="candidates" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="candidates" className="flex items-center">
-                <Users className="w-4 h-4 mr-2" />
-                Candidates
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center">
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="progress" className="flex items-center">
-                <Clock className="w-4 h-4 mr-2" />
-                Contact Progress
-              </TabsTrigger>
-            </TabsList>
+                <TabsContent value="candidates">
+                  <CandidateTable jobId={selectedJob.id} />
+                </TabsContent>
 
-            <TabsContent value="candidates">
-              <CandidateTable jobId={selectedJob.id} />
-            </TabsContent>
+                <TabsContent value="analytics">
+                  <JobAnalytics job={selectedJob} />
+                </TabsContent>
 
-            <TabsContent value="analytics">
-              <JobAnalytics job={selectedJob} />
-            </TabsContent>
-
-            <TabsContent value="progress">
-              <ContactProgress job={selectedJob} />
-            </TabsContent>
-          </Tabs>
+                <TabsContent value="progress">
+                  <ContactProgress job={selectedJob} />
+                </TabsContent>
+              </Tabs>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="max-w-md">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">No Jobs Available</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                  No Jobs Available
+                </h2>
                 <p className="text-slate-600 mb-6">
-                  You don't have any job postings yet. Create your first job to get started with recruiting.
+                  You don't have any job postings yet. Create your first job to
+                  get started with recruiting.
                 </p>
-                <Button 
+                <Button
                   onClick={() => setIsCreateDialogOpen(true)}
                   className="bg-blue-600 hover:bg-blue-700"
                 >

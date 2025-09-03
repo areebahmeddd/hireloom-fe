@@ -12,33 +12,33 @@ import { Calendar, Send, Archive, Phone, Video, Clock } from "lucide-react";
 const conversations = [
   {
     id: 1,
-    candidate: "Alice Johnson",
+    candidate: "Aarti Mehta",
     job: "Frontend Developer",
     status: "Active",
     lastMessage: "Great! Available Tue 4PM.",
     timestamp: "2 min ago",
     unread: true,
-    avatar: "AJ",
+    avatar: "AM",
   },
   {
     id: 2,
-    candidate: "Bob Chen",
+    candidate: "Sameer Jain",
     job: "Backend Developer",
     status: "Scheduled",
     lastMessage: "Looking forward to our meeting!",
     timestamp: "1 hour ago",
     unread: false,
-    avatar: "BC",
+    avatar: "SJ",
   },
   {
     id: 3,
-    candidate: "Carol Smith",
+    candidate: "Pooja Sharma",
     job: "Product Designer",
     status: "Interviewed",
     lastMessage: "Thank you for the interview!",
     timestamp: "1 day ago",
     unread: false,
-    avatar: "CS",
+    avatar: "PS",
   },
 ];
 
@@ -47,7 +47,7 @@ const messages = [
     id: 1,
     sender: "ai",
     content:
-      "Hi Alice! I came across your profile and was impressed by your React and TypeScript experience. We have an exciting Frontend Developer position at our company that might be a great fit for you.",
+      "Hi Aarti! I came across your profile and was impressed by your React and TypeScript experience. We have an exciting Frontend Developer position at our company that might be a great fit for you.",
     timestamp: "10:30 AM",
   },
   {

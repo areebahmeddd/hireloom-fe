@@ -233,7 +233,7 @@ export default function Dashboard() {
                   <CheckCircle className="w-5 h-5 text-green-500" />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-slate-900">
-                      Interview scheduled with Alice Johnson
+                      Interview scheduled with Areeb Ahmed
                     </p>
                     <p className="text-xs text-slate-500">
                       Frontend Developer • 2 minutes ago

@@ -27,8 +27,8 @@ interface ContactProgressProps {
 const contactActivities = [
   {
     id: 1,
-    candidate: "Alice Johnson",
-    avatar: "AJ",
+    candidate: "Anjali Sharma",
+    avatar: "AS",
     action: "Initial contact sent",
     status: "Responded",
     timestamp: "2 hours ago",
@@ -37,8 +37,8 @@ const contactActivities = [
   },
   {
     id: 2,
-    candidate: "Bob Chen",
-    avatar: "BC",
+    candidate: "Suresh Patel",
+    avatar: "SP",
     action: "Follow-up message",
     status: "Pending",
     timestamp: "4 hours ago",
@@ -47,8 +47,8 @@ const contactActivities = [
   },
   {
     id: 3,
-    candidate: "Carol Smith",
-    avatar: "CS",
+    candidate: "Ravi Gupta",
+    avatar: "RG",
     action: "Interview scheduled",
     status: "Confirmed",
     timestamp: "1 day ago",
@@ -57,8 +57,8 @@ const contactActivities = [
   },
   {
     id: 4,
-    candidate: "David Wilson",
-    avatar: "DW",
+    candidate: "Neha Verma",
+    avatar: "NV",
     action: "Initial contact sent",
     status: "No response",
     timestamp: "3 days ago",
