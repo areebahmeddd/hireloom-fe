@@ -33,7 +33,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   }, [stats.length]);
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="relative overflow-hidden gradient-bg">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
       
@@ -42,12 +42,12 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           {/* Left Column - Content */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-full text-sm font-medium float-animation">
                 <TrendingUp className="w-4 h-4 mr-2" />
                 #1 Hiring Platform
               </div>
               
-              <h1 className="text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
+              <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight fade-in-up">
                 Find the perfect{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                   talent
@@ -55,7 +55,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 for your team
               </h1>
               
-              <p className="text-xl text-slate-600 leading-relaxed">
+              <p className="text-xl text-white/90 leading-relaxed fade-in-up" style={{animationDelay: '0.2s'}}>
                 Streamline your hiring process with AI-powered matching, automated workflows, 
                 and intelligent candidate insights. Build your dream team faster than ever.
               </p>
@@ -66,7 +66,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               {features.map((feature, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-slate-700">{feature}</span>
+                  <span className="text-white/90">{feature}</span>
                 </div>
               ))}
             </div>
@@ -75,7 +75,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
+                className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-lg border border-white/30 backdrop-blur-sm component-transition"
                 onClick={onGetStarted}
               >
                 Get Started Free
@@ -85,7 +85,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="px-8 py-4 text-lg border-slate-300 hover:bg-slate-50"
+                className="px-8 py-4 text-lg border-white/50 text-white hover:bg-white/20 backdrop-blur-sm component-transition bg-white/10"
               >
                 <Play className="w-5 h-5 mr-2" />
                 Watch Demo
@@ -93,13 +93,13 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Trust Indicators */}
-            <div className="pt-8 border-t border-slate-200">
-              <p className="text-sm text-slate-500 mb-4">Trusted by leading companies</p>
+            <div className="pt-8 border-t border-white/20">
+              <p className="text-sm text-white/70 mb-4">Trusted by leading companies</p>
               <div className="flex items-center space-x-8 opacity-60">
-                <div className="text-2xl font-bold text-slate-400">Google</div>
-                <div className="text-2xl font-bold text-slate-400">Microsoft</div>
-                <div className="text-2xl font-bold text-slate-400">Stripe</div>
-                <div className="text-2xl font-bold text-slate-400">Airbnb</div>
+                <div className="text-2xl font-bold text-white/60">Google</div>
+                <div className="text-2xl font-bold text-white/60">Microsoft</div>
+                <div className="text-2xl font-bold text-white/60">Stripe</div>
+                <div className="text-2xl font-bold text-white/60">Airbnb</div>
               </div>
             </div>
           </div>
@@ -107,8 +107,8 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           {/* Right Column - Visual */}
           <div className="relative">
             {/* Main Dashboard Preview */}
-            <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/30 overflow-hidden component-transition float-animation">
+              <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200/50">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-red-400 rounded-full"></div>
                   <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
@@ -131,9 +131,9 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                   {stats.map((stat, index) => (
                     <div 
                       key={index}
-                      className={`p-4 rounded-lg transition-all duration-500 ${
+                      className={`p-4 rounded-lg transition-all duration-500 component-transition ${
                         index === currentStat 
-                          ? 'bg-blue-50 border-2 border-blue-200 scale-105' 
+                          ? 'bg-white border-2 border-white scale-105' 
                           : 'bg-slate-50 border border-slate-200'
                       }`}
                     >
@@ -151,7 +151,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-slate-700">Top Candidates</h4>
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                    <div key={i} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg component-transition" style={{animationDelay: `${i * 0.1}s`}}>
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-medium">
                         {String.fromCharCode(64 + i)}
                       </div>
@@ -174,7 +174,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               <Briefcase className="w-6 h-6" />
             </div>
             
-            <div className="absolute -bottom-4 -left-4 bg-blue-500 text-white p-3 rounded-full shadow-lg animate-pulse">
+            <div className="absolute -bottom-4 -left-4 bg-white text-black p-3 rounded-full shadow-lg animate-pulse">
               <Users className="w-6 h-6" />
             </div>
           </div>
