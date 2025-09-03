@@ -14,13 +14,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
+import { Job } from "@/lib/jobs-context";
 
 interface CreateJobDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onJobCreate: (job: any) => void;
-  onJobUpdate?: (job: any) => void;
-  editJob?: any; // Job to edit (if provided, dialog is in edit mode)
+  onJobCreate: (
+    job: Omit<
+      Job,
+      | "id"
+      | "createdAt"
+      | "candidates"
+      | "contacted"
+      | "scheduled"
+      | "status"
+      | "statusColor"
+      | "resumes"
+      | "progress"
+    >,
+  ) => void;
+  onJobUpdate?: (job: Job) => void;
+  editJob?: Job; // Job to edit (if provided, dialog is in edit mode)
 }
 
 export function CreateJobDialog({
@@ -84,19 +98,14 @@ export function CreateJobDialog({
       };
       onJobUpdate(updatedJob);
     } else {
-      // Create new job
+      // Create new job - only pass required fields
       const newJob = {
-        id: Date.now(), // Simple ID generation
         title: formData.title,
-        createdAt: new Date(),
         description: formData.description,
         location: formData.location,
         salary: formData.salary,
         type: formData.type,
         skills: formData.skills,
-        candidates: 0,
-        contacted: 0,
-        scheduled: 0,
       };
       onJobCreate(newJob);
     }

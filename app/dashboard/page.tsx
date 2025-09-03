@@ -19,53 +19,7 @@ import { Navigation } from "@/components/navigation";
 import { ProtectedRoute } from "@/components/protected-route";
 import { CreateJobDialog } from "@/components/create-job-dialog";
 import { AptitudeTestResults } from "@/components/aptitude-test-results";
-
-const jobCards = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    status: "Analysis",
-    statusColor: "bg-primary/10 text-primary",
-    resumes: 20,
-    description: "React, TypeScript, Next.js",
-    progress: 65,
-    location: "Bangalore, Karnataka",
-    salary: "₹12L - ₹18L",
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    status: "Contacting",
-    statusColor: "bg-orange-100 text-orange-700",
-    resumes: 15,
-    description: "Node.js, PostgreSQL, AWS",
-    progress: 40,
-    location: "Hyderabad, Telangana",
-    salary: "₹15L - ₹22L",
-  },
-  {
-    id: 3,
-    title: "Product Designer",
-    status: "Scheduled Meetings",
-    statusColor: "bg-purple-100 text-purple-700",
-    resumes: 8,
-    description: "Figma, User Research, Prototyping",
-    progress: 80,
-    location: "Mumbai, Maharashtra",
-    salary: "₹10L - ₹16L",
-  },
-  {
-    id: 4,
-    title: "DevOps Engineer",
-    status: "Offers Sent",
-    statusColor: "bg-green-100 text-green-700",
-    resumes: 12,
-    description: "AWS, Kubernetes, Docker",
-    progress: 95,
-    location: "Pune, Maharashtra",
-    salary: "₹18L - ₹25L",
-  },
-];
+import { useJobs } from "@/lib/jobs-context";
 
 const metrics = [
   { label: "Resumes Parsed", value: "156", icon: FileText, change: "+12%" },
@@ -76,10 +30,15 @@ const metrics = [
 
 export default function Dashboard() {
   const [showCreateJobDialog, setShowCreateJobDialog] = useState(false);
-  const [jobs, setJobs] = useState(jobCards);
+  const { jobs, addJob, loading, error } = useJobs();
 
-  const handleJobCreate = (newJob: any) => {
-    setJobs((prev) => [newJob, ...prev]);
+  const handleJobCreate = async (newJob: any) => {
+    try {
+      await addJob(newJob);
+      setShowCreateJobDialog(false);
+    } catch (error) {
+      console.error("Failed to create job:", error);
+    }
   };
 
   // Format current date and time

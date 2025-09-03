@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { CandidateTable } from "@/components/candidate-table";
 import { JobAnalytics } from "@/components/job-analytics";
 import { ContactProgress } from "@/components/contact-progress";
 import { CreateJobDialog } from "@/components/create-job-dialog";
+import { useJobs } from "@/lib/jobs-context";
 import {
   Edit3,
   Users,
@@ -21,8 +22,29 @@ import {
 } from "lucide-react";
 
 // Utility function to format time ago
-const formatTimeAgo = (date: Date) => {
+const formatTimeAgo = (dateInput: string | Date | null | undefined) => {
+  // Handle null, undefined, or invalid dates
+  if (!dateInput) {
+    return "Unknown";
+  }
+
   const now = new Date();
+  let date: Date;
+
+  if (typeof dateInput === "string") {
+    date = new Date(dateInput);
+    // Check if the date is invalid
+    if (isNaN(date.getTime())) {
+      return "Unknown";
+    }
+  } else {
+    date = dateInput;
+    // Check if the date is invalid
+    if (!date || isNaN(date.getTime())) {
+      return "Unknown";
+    }
+  }
+
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   if (diffInSeconds < 60) {
@@ -39,103 +61,63 @@ const formatTimeAgo = (date: Date) => {
   }
 };
 
-const initialJobs = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    description:
-      "We are looking for a skilled Frontend Developer to join our growing team. The ideal candidate will have strong experience with React, TypeScript, and modern web development practices.",
-    location: "Bangalore, Karnataka",
-    salary: "₹12L - ₹18L",
-    type: "Full-time",
-    skills: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
-    candidates: 20,
-    contacted: 8,
-    scheduled: 3,
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-    description:
-      "Join our backend team to build scalable APIs and services. Experience with Node.js, PostgreSQL, and cloud platforms required.",
-    location: "Hyderabad, Telangana",
-    salary: "₹15L - ₹22L",
-    type: "Full-time",
-    skills: ["Node.js", "PostgreSQL", "AWS", "Docker"],
-    candidates: 15,
-    contacted: 12,
-    scheduled: 5,
-  },
-  {
-    id: 3,
-    title: "Product Designer",
-    createdAt: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-    description:
-      "Creative Product Designer to lead user experience and interface design. Strong portfolio and user research experience required.",
-    location: "Mumbai, Maharashtra",
-    salary: "₹10L - ₹16L",
-    type: "Full-time",
-    skills: ["Figma", "User Research", "Prototyping", "Design Systems"],
-    candidates: 8,
-    contacted: 8,
-    scheduled: 5,
-  },
-  {
-    id: 4,
-    title: "DevOps Engineer",
-    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
-    description:
-      "Experienced DevOps Engineer to manage our cloud infrastructure and deployment pipelines. Strong expertise in AWS, Kubernetes, and CI/CD required.",
-    location: "Pune, Maharashtra",
-    salary: "₹18L - ₹25L",
-    type: "Full-time",
-    skills: ["AWS", "Kubernetes", "Docker", "Jenkins", "Terraform"],
-    candidates: 12,
-    contacted: 6,
-    scheduled: 2,
-  },
-];
-
 export default function JobManagement() {
-  const [jobs, setJobs] = useState(initialJobs);
-  const [selectedJob, setSelectedJob] = useState(initialJobs[0]);
+  const { jobs, addJob, updateJob, deleteJob, loading, error } = useJobs();
+  const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const handleJobCreate = (newJob: any) => {
-    setJobs((prev) => [newJob, ...prev]);
-    setSelectedJob(newJob);
+  // Update selected job when jobs change
+  useEffect(() => {
+    if (jobs.length > 0 && !selectedJob) {
+      setSelectedJob(jobs[0]);
+    }
+  }, [jobs, selectedJob]);
+
+  const handleJobCreate = async (newJob: any) => {
+    try {
+      await addJob(newJob);
+      setSelectedJob(newJob);
+      setIsCreateDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to create job:", error);
+    }
   };
 
-  const handleJobUpdate = (updatedJob: any) => {
-    setJobs((prev) =>
-      prev.map((job) => (job.id === updatedJob.id ? updatedJob : job)),
-    );
-    setSelectedJob(updatedJob);
+  const handleJobUpdate = async (updatedJob: any) => {
+    try {
+      await updateJob(updatedJob.id, updatedJob);
+      setSelectedJob(updatedJob);
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to update job:", error);
+    }
+  };
+
+  const handleDeleteJob = async (jobId: number) => {
+    try {
+      await deleteJob(jobId);
+      if (selectedJob?.id === jobId) {
+        const remainingJobs = jobs.filter((j) => j.id !== jobId);
+        setSelectedJob(remainingJobs.length > 0 ? remainingJobs[0] : jobs[0]);
+      }
+    } catch (error) {
+      console.error("Failed to delete job:", error);
+    }
   };
 
   const handleEditJob = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteJob = () => {
+  const handleDeleteSelectedJob = async () => {
     if (
       confirm(
-        `Are you sure you want to delete "${selectedJob.title}"? This action cannot be undone.`,
+        `Are you sure you want to delete "${selectedJob?.title}"? This action cannot be undone.`,
       )
     ) {
-      // Remove the job from the jobs array
-      const updatedJobs = jobs.filter((job) => job.id !== selectedJob.id);
-      setJobs(updatedJobs);
-
-      // If we deleted the selected job, select the first available job or null
-      if (updatedJobs.length > 0) {
-        setSelectedJob(updatedJobs[0]);
-      } else {
-        // If no jobs left, you might want to redirect or show an empty state
-        setSelectedJob(null as any); // or handle this case appropriately
+      if (selectedJob) {
+        await handleDeleteJob(selectedJob.id);
       }
     }
   };
@@ -229,7 +211,7 @@ export default function JobManagement() {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={handleDeleteJob}
+                        onClick={handleDeleteSelectedJob}
                         className="bg-red-600 hover:bg-red-700"
                       >
                         <Trash2 className="w-3 h-3 mr-1" />
@@ -253,11 +235,20 @@ export default function JobManagement() {
                         Required Skills
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {selectedJob.skills.map((skill, index) => (
-                          <Badge key={index} variant="secondary">
-                            {skill}
-                          </Badge>
-                        ))}
+                        {selectedJob.skills &&
+                        Array.isArray(selectedJob.skills) ? (
+                          selectedJob.skills.map(
+                            (skill: string, index: number) => (
+                              <Badge key={index} variant="secondary">
+                                {skill}
+                              </Badge>
+                            ),
+                          )
+                        ) : (
+                          <p className="text-sm text-slate-600">
+                            No skills specified
+                          </p>
+                        )}
                       </div>
                     </div>
                   </CardContent>
