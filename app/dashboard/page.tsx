@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,7 @@ import {
 import Link from "next/link";
 import { Navigation } from "@/components/navigation";
 import { ProtectedRoute } from "@/components/protected-route";
+import { CreateJobDialog } from "@/components/create-job-dialog";
 
 const jobCards = [
   {
@@ -64,6 +66,13 @@ const metrics = [
 ];
 
 export default function Dashboard() {
+  const [showCreateJobDialog, setShowCreateJobDialog] = useState(false);
+  const [jobs, setJobs] = useState(jobCards);
+
+  const handleJobCreate = (newJob: any) => {
+    setJobs(prev => [newJob, ...prev]);
+  };
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-slate-50">
@@ -115,14 +124,17 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold text-slate-900">
               Active Job Postings
             </h2>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => setShowCreateJobDialog(true)}
+            >
               <Plus className="w-4 h-4 mr-2" />
               Create New Job
             </Button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {jobCards.map((job) => (
+            {jobs.map((job) => (
               <Card
                 key={job.id}
                 className="hover:shadow-lg transition-all duration-200 cursor-pointer group"
@@ -213,8 +225,15 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-      </main>
-    </div>
+        </main>
+      </div>
+
+      {/* Create Job Dialog */}
+      <CreateJobDialog
+        open={showCreateJobDialog}
+        onOpenChange={setShowCreateJobDialog}
+        onJobCreate={handleJobCreate}
+      />
     </ProtectedRoute>
   );
 }
