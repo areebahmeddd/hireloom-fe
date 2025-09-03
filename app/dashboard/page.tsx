@@ -172,7 +172,12 @@ export default function Dashboard() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                      {job.title}
+                      <Link 
+                        href="/jobs" 
+                        className="hover:text-blue-600 transition-colors cursor-pointer"
+                      >
+                        {job.title}
+                      </Link>
                     </CardTitle>
                     <Badge className={job.statusColor}>{job.status}</Badge>
                   </div>
