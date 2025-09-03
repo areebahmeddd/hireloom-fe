@@ -37,8 +37,8 @@ const initialJobs = [
     title: 'Frontend Developer',
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
     description: 'We are looking for a skilled Frontend Developer to join our growing team. The ideal candidate will have strong experience with React, TypeScript, and modern web development practices.',
-    location: 'San Francisco, CA',
-    salary: '$120k - $160k',
+    location: 'Bangalore, Karnataka',
+    salary: '₹12L - ₹18L',
     type: 'Full-time',
     skills: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS'],
     candidates: 20,
@@ -50,8 +50,8 @@ const initialJobs = [
     title: 'Backend Developer',
     createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
     description: 'Join our backend team to build scalable APIs and services. Experience with Node.js, PostgreSQL, and cloud platforms required.',
-    location: 'New York, NY',
-    salary: '$130k - $170k',
+    location: 'Hyderabad, Telangana',
+    salary: '₹15L - ₹22L',
     type: 'Full-time',
     skills: ['Node.js', 'PostgreSQL', 'AWS', 'Docker'],
     candidates: 15,
@@ -63,13 +63,26 @@ const initialJobs = [
     title: 'Product Designer',
     createdAt: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
     description: 'Creative Product Designer to lead user experience and interface design. Strong portfolio and user research experience required.',
-    location: 'Remote',
-    salary: '$110k - $140k',
+    location: 'Mumbai, Maharashtra',
+    salary: '₹10L - ₹16L',
     type: 'Full-time',
     skills: ['Figma', 'User Research', 'Prototyping', 'Design Systems'],
     candidates: 8,
     contacted: 8,
     scheduled: 5,
+  },
+  {
+    id: 4,
+    title: 'DevOps Engineer',
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
+    description: 'Experienced DevOps Engineer to manage our cloud infrastructure and deployment pipelines. Strong expertise in AWS, Kubernetes, and CI/CD required.',
+    location: 'Pune, Maharashtra',
+    salary: '₹18L - ₹25L',
+    type: 'Full-time',
+    skills: ['AWS', 'Kubernetes', 'Docker', 'Jenkins', 'Terraform'],
+    candidates: 12,
+    contacted: 6,
+    scheduled: 2,
   },
 ];
 

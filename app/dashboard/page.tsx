@@ -29,33 +29,41 @@ const jobCards = [
     resumes: 20,
     description: "React, TypeScript, Next.js",
     progress: 65,
+    location: "Bangalore, Karnataka",
+    salary: "₹12L - ₹18L",
   },
   {
     id: 2,
     title: "Backend Developer",
     status: "Contacting",
     statusColor: "bg-orange-100 text-orange-700",
-    resumes: 12,
+    resumes: 15,
     description: "Node.js, PostgreSQL, AWS",
     progress: 40,
+    location: "Hyderabad, Telangana",
+    salary: "₹15L - ₹22L",
   },
   {
     id: 3,
     title: "Product Designer",
     status: "Scheduled Meetings",
     statusColor: "bg-purple-100 text-purple-700",
-    resumes: 5,
+    resumes: 8,
     description: "Figma, User Research, Prototyping",
     progress: 80,
+    location: "Mumbai, Maharashtra",
+    salary: "₹10L - ₹16L",
   },
   {
     id: 4,
     title: "DevOps Engineer",
     status: "Offers Sent",
     statusColor: "bg-green-100 text-green-700",
-    resumes: 3,
-    description: "Docker, Kubernetes, CI/CD",
+    resumes: 12,
+    description: "AWS, Kubernetes, Docker",
     progress: 95,
+    location: "Pune, Maharashtra",
+    salary: "₹18L - ₹25L",
   },
 ];
 
@@ -74,6 +82,27 @@ export default function Dashboard() {
     setJobs(prev => [newJob, ...prev]);
   };
 
+  // Format current date and time
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric', 
+      month: 'long',
+      day: '2-digit',
+    };
+    const timeOptions: Intl.DateTimeFormatOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    };
+    
+    const date = now.toLocaleDateString('en-US', options);
+    const time = now.toLocaleTimeString('en-US', timeOptions);
+    
+    return `${date} | ${time}`;
+  };
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-slate-50">
@@ -83,10 +112,10 @@ export default function Dashboard() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-slate-900 mb-2">
-              AI Recruiter Dashboard
+              Welcome, Shivansh
             </h1>
             <p className="text-slate-600">
-              Manage your job postings and track candidate progress
+              Hireloom | {getCurrentDateTime()}
             </p>
           </div>
 

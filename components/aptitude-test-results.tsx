@@ -24,8 +24,8 @@ interface TestResult {
 const mockTestResults: TestResult[] = [
   {
     id: '1',
-    candidateName: 'Alice Johnson',
-    candidateEmail: 'alice@email.com',
+    candidateName: 'Priya Sharma',
+    candidateEmail: 'priya.sharma@email.com',
     jobTitle: 'Frontend Developer',
     score: 8,
     percentage: 80,
@@ -36,8 +36,8 @@ const mockTestResults: TestResult[] = [
   },
   {
     id: '2',
-    candidateName: 'Bob Chen',
-    candidateEmail: 'bob@email.com',
+    candidateName: 'Karthik Reddy',
+    candidateEmail: 'karthik.reddy@email.com',
     jobTitle: 'Backend Developer',
     score: 6,
     percentage: 60,
@@ -48,8 +48,8 @@ const mockTestResults: TestResult[] = [
   },
   {
     id: '3',
-    candidateName: 'Sarah Kim',
-    candidateEmail: 'sarah@email.com',
+    candidateName: 'Deepika Agarwal',
+    candidateEmail: 'deepika.agarwal@email.com',
     jobTitle: 'Backend Developer',
     score: 9,
     percentage: 90,
