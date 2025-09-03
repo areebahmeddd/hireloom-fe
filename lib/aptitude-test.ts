@@ -147,35 +147,43 @@ export const calculateTestScore = (
   };
 };
 
-// Mock function to simulate sending test to candidate
+// Send test to candidate via email
 export const sendTestToCandidate = async (
   test: AptitudeTest,
   candidateEmail: string,
   candidateName: string,
 ): Promise<string> => {
-  // In real implementation, this would send an email with a unique test link
-  const testLink = `${window.location.origin}/take-test/${test.id}?candidate=${encodeURIComponent(candidateEmail)}`;
+  try {
+    const testLink = `${window.location.origin}/take-test/${test.id}?candidate=${encodeURIComponent(candidateEmail)}`;
 
-  // Mock email sending
-  console.log(`
-    Sending aptitude test to ${candidateName} (${candidateEmail})
-    
-    Subject: Aptitude Test for ${test.jobTitle} Position
-    
-    Dear ${candidateName},
-    
-    Thank you for your interest in the ${test.jobTitle} position. 
-    
-    Please complete the following aptitude test:
-    ${testLink}
-    
-    Test Duration: ${test.duration} minutes
-    Questions: ${test.questions.length}
-    Passing Score: ${test.passingScore}%
-    
-    Best regards,
-    Hireloom Team
-  `);
+    // Send email using our API
+    const response = await fetch("/api/send-test-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: candidateEmail,
+        subject: `Aptitude Test Invitation - ${test.jobTitle} Position`,
+        testId: test.id,
+        jobTitle: test.jobTitle,
+        candidateName: candidateName,
+        questions: test.questions,
+      }),
+    });
 
-  return testLink;
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.error || "Failed to send email");
+    }
+
+    console.log(
+      `✅ Test email sent successfully to ${candidateName} (${candidateEmail})`,
+    );
+    return testLink;
+  } catch (error) {
+    console.error("Error sending test email:", error);
+    throw new Error("Failed to send test invitation email");
+  }
 };
