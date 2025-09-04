@@ -379,6 +379,29 @@ export default function JobManagement() {
                         )}
                       </div>
                     </div>
+
+                    {/* Job Portals */}
+                    {selectedJob.jobPortals &&
+                      selectedJob.jobPortals.length > 0 && (
+                        <div className="space-y-2 mt-4">
+                          <h4 className="font-medium text-slate-900">
+                            Posted on Job Portals
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedJob.jobPortals.map(
+                              (portal: string, index: number) => (
+                                <Badge
+                                  key={index}
+                                  variant="outline"
+                                  className="bg-green-50 border-green-200 text-green-700"
+                                >
+                                  {portal}
+                                </Badge>
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
                   </CardContent>
                 </Card>
               </div>
