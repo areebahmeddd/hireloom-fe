@@ -104,17 +104,15 @@ export function SignUpDialog({
       await signUpWithEmail(signUpData);
 
       toast.success("Account created successfully!", {
-        description: "Welcome to Hireloom. Redirecting to dashboard...",
+        description: "Welcome to Hireloom.",
       });
 
       // Reset form and close dialog
       resetForm();
       onOpenChange(false);
 
-      // Redirect to dashboard after successful signup
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
+      // Redirect to dashboard immediately after successful signup
+      router.push("/dashboard");
     } catch (error) {
       console.error("Signup error:", error);
 

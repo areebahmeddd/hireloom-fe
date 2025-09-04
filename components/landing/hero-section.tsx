@@ -287,10 +287,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-emerald-500/5 rounded-full blur-3xl animate-pulse"></div>
-          <div
-            className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-teal-500/5 rounded-full blur-3xl animate-pulse"
-            style={{ animationDelay: "2s" }}
-          ></div>
+          <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-teal-500/5 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
         <div className="relative container mx-auto px-6">

@@ -73,17 +73,15 @@ export function SignInDialog({
       await signInWithEmail(signInData);
 
       toast.success("Welcome back!", {
-        description: "Signed in successfully. Redirecting to dashboard...",
+        description: "Signed in successfully.",
       });
 
       // Reset form and close dialog
       resetForm();
       onOpenChange(false);
 
-      // Redirect to dashboard after successful signin
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
+      // Redirect to dashboard immediately after successful signin
+      router.push("/dashboard");
     } catch (error) {
       console.error("Signin error:", error);
 
