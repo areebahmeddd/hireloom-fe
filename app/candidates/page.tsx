@@ -13,11 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, Filter, Download } from "lucide-react";
+import { useJobs } from "@/lib/jobs-context";
 
 export default function Candidates() {
   const [searchTerm, setSearchTerm] = useState("");
   const [jobFilter, setJobFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const { jobs } = useJobs();
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -53,9 +56,11 @@ export default function Candidates() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Jobs</SelectItem>
-                <SelectItem value="frontend">Frontend Developer</SelectItem>
-                <SelectItem value="backend">Backend Developer</SelectItem>
-                <SelectItem value="designer">Product Designer</SelectItem>
+                {jobs.map((job) => (
+                  <SelectItem key={job.id} value={job.id.toString()}>
+                    {job.title}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 

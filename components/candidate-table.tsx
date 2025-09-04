@@ -78,14 +78,23 @@ export function CandidateTable({
   const [loading, setLoading] = useState(true);
 
   // Get contexts
-  const { getCandidatesForJob, updateCandidateStatus } = useCandidates();
-  const { getJobById } = useJobs();
+  const {
+    getCandidatesForJob,
+    updateCandidateStatus,
+    candidates: allCandidates,
+    loading: contextLoading,
+  } = useCandidates();
+  const { getJobById, jobs } = useJobs();
   const { toast } = useToast();
 
-  // Load candidates based on jobId
+  // Load candidates based on jobId or show all candidates
   useEffect(() => {
     const loadCandidates = async () => {
-      if (jobId) {
+      if (showAllJobs) {
+        // When showing all jobs, use the candidates from context
+        setCandidates(allCandidates);
+        setLoading(contextLoading);
+      } else if (jobId) {
         setLoading(true);
         try {
           const jobCandidates = await getCandidatesForJob(jobId);
@@ -103,7 +112,7 @@ export function CandidateTable({
     };
 
     loadCandidates();
-  }, [jobId, getCandidatesForJob]);
+  }, [jobId, showAllJobs, allCandidates, contextLoading, getCandidatesForJob]);
 
   // Get job data
   const jobData = jobId ? getJobById(parseInt(jobId)) : null;
@@ -221,7 +230,15 @@ export function CandidateTable({
     );
   }
 
-  // Apply status filter (removed job filter since we're already filtering by job)
+  // Apply job filter when showing all jobs
+  if (showAllJobs && jobFilter !== "all") {
+    filteredCandidates = filteredCandidates.filter(
+      (candidate) =>
+        candidate.appliedJobs && candidate.appliedJobs.includes(jobFilter),
+    );
+  }
+
+  // Apply status filter
   if (statusFilter !== "all") {
     const statusMapping: { [key: string]: string } = {
       pending: "pending",
@@ -340,9 +357,37 @@ export function CandidateTable({
                     </td>
                     {showAllJobs && (
                       <td className="py-4 px-4">
-                        <span className="text-sm text-slate-600">
-                          {jobDataForTest.title}
-                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.appliedJobs &&
+                          candidate.appliedJobs.length > 0 ? (
+                            candidate.appliedJobs
+                              .slice(0, 2)
+                              .map((jobId, index) => {
+                                const job = jobs.find(
+                                  (j) => j.id.toString() === jobId,
+                                );
+                                return (
+                                  <Badge
+                                    key={index}
+                                    variant="outline"
+                                    className="text-xs"
+                                  >
+                                    {job?.title || `Job ${jobId}`}
+                                  </Badge>
+                                );
+                              })
+                          ) : (
+                            <span className="text-sm text-slate-400">
+                              No jobs
+                            </span>
+                          )}
+                          {candidate.appliedJobs &&
+                            candidate.appliedJobs.length > 2 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{candidate.appliedJobs.length - 2}
+                              </Badge>
+                            )}
+                        </div>
                       </td>
                     )}
                     <td className="py-4 px-4">
