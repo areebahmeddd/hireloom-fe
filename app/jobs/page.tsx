@@ -12,6 +12,7 @@ import { ContactProgress } from "@/components/contact-progress";
 import { CreateJobDialog } from "@/components/create-job-dialog";
 import { AddResumeDialog } from "@/components/add-resume-dialog";
 import { useJobs } from "@/lib/jobs-context";
+import { useCandidates } from "@/lib/candidates-context";
 import {
   Edit3,
   Users,
@@ -65,6 +66,7 @@ const formatTimeAgo = (dateInput: string | Date | null | undefined) => {
 
 export default function JobManagement() {
   const { jobs, addJob, updateJob, deleteJob, loading, error } = useJobs();
+  const { refreshCandidates } = useCandidates();
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -212,6 +214,7 @@ export default function JobManagement() {
                           title: selectedJob.title,
                           description: selectedJob.description,
                         }}
+                        onUploadSuccess={refreshCandidates}
                         trigger={
                           <Button
                             variant="outline"

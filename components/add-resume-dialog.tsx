@@ -29,9 +29,14 @@ interface Job {
 interface AddResumeDialogProps {
   job: Job;
   trigger?: React.ReactNode;
+  onUploadSuccess?: () => void;
 }
 
-export function AddResumeDialog({ job, trigger }: AddResumeDialogProps) {
+export function AddResumeDialog({
+  job,
+  trigger,
+  onUploadSuccess,
+}: AddResumeDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -88,6 +93,11 @@ export function AddResumeDialog({ job, trigger }: AddResumeDialogProps) {
       console.log("Resume analysis result:", result);
 
       setUploadStatus("success");
+
+      // Trigger refresh to show new candidate
+      if (onUploadSuccess) {
+        onUploadSuccess();
+      }
 
       // Reset form after 2 seconds
       setTimeout(() => {
@@ -157,7 +167,7 @@ export function AddResumeDialog({ job, trigger }: AddResumeDialogProps) {
 
           {/* File Upload */}
           <div className="space-y-2">
-            <Label htmlFor="resume-file">Resume (PDF only)</Label>
+            <Label htmlFor="resume-file">Resume</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
               <input
                 id="resume-file"
