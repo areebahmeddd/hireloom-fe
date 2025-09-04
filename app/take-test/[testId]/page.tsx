@@ -401,6 +401,141 @@ export default function TakeTestPage() {
                   </div>
                 )}
 
+                {test.questions[currentQuestionIndex].type === "assignment" && (
+                  <div className="space-y-6">
+                    {/* Assignment Title */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-lg text-blue-900 mb-2">
+                        📋{" "}
+                        {test.questions[currentQuestionIndex].assignmentTitle}
+                      </h3>
+                      <p className="text-blue-800 text-sm">
+                        {
+                          test.questions[currentQuestionIndex]
+                            .assignmentDescription
+                        }
+                      </p>
+                    </div>
+
+                    {/* Requirements */}
+                    {test.questions[currentQuestionIndex]
+                      .assignmentRequirements &&
+                      test.questions[currentQuestionIndex]
+                        .assignmentRequirements!.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            ✅ Requirements
+                          </h4>
+                          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-4">
+                            {test.questions[
+                              currentQuestionIndex
+                            ].assignmentRequirements!.map((req, index) => (
+                              <li key={index}>{req}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                    {/* Deliverables */}
+                    {test.questions[currentQuestionIndex].deliverables &&
+                      test.questions[currentQuestionIndex].deliverables!
+                        .length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            🎯 Expected Deliverables
+                          </h4>
+                          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-4">
+                            {test.questions[
+                              currentQuestionIndex
+                            ].deliverables!.map((del, index) => (
+                              <li key={index}>{del}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                    {/* Resources */}
+                    {test.questions[currentQuestionIndex].resources &&
+                      test.questions[currentQuestionIndex].resources!.length >
+                        0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            🔗 Resources
+                          </h4>
+                          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-4">
+                            {test.questions[
+                              currentQuestionIndex
+                            ].resources!.map((res, index) => (
+                              <li key={index}>
+                                {res.startsWith("http") ? (
+                                  <a
+                                    href={res}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline"
+                                  >
+                                    {res}
+                                  </a>
+                                ) : (
+                                  res
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                    {/* Evaluation Criteria */}
+                    {test.questions[currentQuestionIndex].evaluationCriteria &&
+                      test.questions[currentQuestionIndex].evaluationCriteria!
+                        .length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            💡 Evaluation Criteria
+                          </h4>
+                          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-4">
+                            {test.questions[
+                              currentQuestionIndex
+                            ].evaluationCriteria!.map((crit, index) => (
+                              <li key={index}>{crit}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                    {/* Response Area */}
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">
+                        📝 Your Solution/Approach:
+                      </Label>
+                      <Textarea
+                        value={
+                          answers
+                            .find(
+                              (a) =>
+                                a.questionId ===
+                                test.questions[currentQuestionIndex].id,
+                            )
+                            ?.answer?.toString() || ""
+                        }
+                        onChange={(e) =>
+                          handleAnswer(
+                            test.questions[currentQuestionIndex].id,
+                            e.target.value,
+                          )
+                        }
+                        placeholder="Provide your solution, approach, or implementation details. Include code snippets, explanations, and any relevant documentation..."
+                        className="min-h-60"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        💡 Tip: Be as detailed as possible. Include your thought
+                        process, implementation approach, and any assumptions
+                        you're making.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex justify-between">
                   <div className="text-sm text-muted-foreground">
                     {test.questions[currentQuestionIndex].timeLimit && (

@@ -2,13 +2,25 @@
 
 export interface Question {
   id: string;
-  type: "multiple_choice" | "short_answer" | "coding" | "scenario";
+  type:
+    | "multiple_choice"
+    | "short_answer"
+    | "coding"
+    | "scenario"
+    | "assignment";
   question: string;
   options?: string[]; // For multiple choice
   correctAnswer?: string | number; // For multiple choice (index) or short answer
   difficulty: "easy" | "medium" | "hard";
   skill: string;
   timeLimit?: number; // in minutes
+  // Custom assignment fields
+  assignmentTitle?: string; // For assignment type
+  assignmentDescription?: string; // Detailed assignment instructions
+  assignmentRequirements?: string[]; // List of requirements
+  deliverables?: string[]; // Expected deliverables
+  resources?: string[]; // Links or resources provided
+  evaluationCriteria?: string[]; // How the assignment will be evaluated
 }
 
 export interface AptitudeTest {
