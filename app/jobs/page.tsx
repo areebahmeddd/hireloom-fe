@@ -10,6 +10,7 @@ import { CandidateTable } from "@/components/candidate-table";
 import { JobAnalytics } from "@/components/job-analytics";
 import { ContactProgress } from "@/components/contact-progress";
 import { CreateJobDialog } from "@/components/create-job-dialog";
+import { AddResumeDialog } from "@/components/add-resume-dialog";
 import { useJobs } from "@/lib/jobs-context";
 import {
   Edit3,
@@ -19,6 +20,7 @@ import {
   MapPin,
   DollarSign,
   Trash2,
+  Upload,
 } from "lucide-react";
 
 // Utility function to format time ago
@@ -204,6 +206,23 @@ export default function JobManagement() {
                       Created {formatTimeAgo(selectedJob.createdAt)}
                     </div>
                     <div className="flex items-center space-x-2">
+                      <AddResumeDialog
+                        job={{
+                          id: selectedJob.id,
+                          title: selectedJob.title,
+                          description: selectedJob.description,
+                        }}
+                        trigger={
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="hover:bg-green-50 hover:text-green-700"
+                          >
+                            <Upload className="w-3 h-3 mr-1" />
+                            Add Resume
+                          </Button>
+                        }
+                      />
                       <Button
                         variant="outline"
                         size="sm"
