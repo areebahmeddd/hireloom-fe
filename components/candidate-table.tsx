@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,187 +27,32 @@ import {
   Brain,
 } from "lucide-react";
 import { CreateAptitudeTestDialog } from "./create-aptitude-test-dialog";
+import { useCandidates } from "@/lib/candidates-context";
+import { useJobs } from "@/lib/jobs-context";
 
 interface Candidate {
-  id: number;
+  id: string;
   name: string;
-  score: number;
-  skills: string[];
-  contactStatus: string;
-  statusColor: string;
-  experience: string;
-  location: string;
   email: string;
-  phone: string;
-  linkedin: string;
-  github: string;
-  leetcode?: string;
-  notes: string;
-  avatar: string;
-  job: string;
-  jobId: number;
+  phone?: string;
+  score: number;
+  githubScore?: number;
+  resumeScore?: number;
+  suitabilityScore?: number;
+  skills: string[];
+  experience: number;
+  status: string;
+  location?: string;
+  linkedin?: string;
+  github?: string;
+  strengths?: string[];
+  weaknesses?: string[];
+  overallAssessment?: string;
+  appliedJobs: string[];
 }
 
-const allCandidates: Candidate[] = [
-  // Frontend Developer candidates (jobId: 1)
-  {
-    id: 1,
-    name: "Priya Sharma",
-    score: 92,
-    skills: ["React", "TypeScript", "Next.js"],
-    contactStatus: "Scheduled",
-    statusColor: "bg-green-100 text-green-700",
-    experience: "5 years",
-    location: "Bangalore, Karnataka",
-    email: "priya.sharma@email.com",
-    phone: "+91 98765 43210",
-    linkedin: "linkedin.com/in/priyasharma",
-    github: "github.com/priyasharma",
-    leetcode: "leetcode.com/priyasharma",
-    notes: "Strong React background, excellent communication skills",
-    avatar: "PS",
-    job: "Frontend Developer",
-    jobId: 1,
-  },
-  {
-    id: 2,
-    name: "Rohit Patel",
-    score: 89,
-    skills: ["Vue.js", "JavaScript", "CSS"],
-    contactStatus: "Contacted",
-    statusColor: "bg-primary/10 text-primary",
-    experience: "4 years",
-    location: "Mumbai, Maharashtra",
-    email: "rohit.patel@email.com",
-    phone: "+91 98765 43211",
-    linkedin: "linkedin.com/in/rohitpatel",
-    github: "github.com/rohitpatel",
-    leetcode: "leetcode.com/rohitpatel",
-    notes: "Creative frontend developer with strong design sense",
-    avatar: "RP",
-    job: "Frontend Developer",
-    jobId: 1,
-  },
-  {
-    id: 3,
-    name: "Arjun Gupta",
-    score: 87,
-    skills: ["React", "Redux", "Webpack"],
-    contactStatus: "Not Contacted",
-    statusColor: "bg-slate-100 text-slate-700",
-    experience: "6 years",
-    location: "Mumbai, Maharashtra",
-    email: "arjun.gupta@email.com",
-    phone: "+91 98765 43210",
-    linkedin: "linkedin.com/in/arjungupta",
-    github: "github.com/arjungupta",
-    leetcode: "leetcode.com/arjungupta",
-    notes: "Senior frontend developer with team leadership experience",
-    avatar: "AG",
-    job: "Frontend Developer",
-    jobId: 1,
-  },
-  // Backend Developer candidates (jobId: 2)
-  {
-    id: 4,
-    name: "Vikram Singh",
-    score: 94,
-    skills: ["Node.js", "PostgreSQL", "AWS"],
-    contactStatus: "Interviewed",
-    statusColor: "bg-purple-100 text-purple-700",
-    experience: "7 years",
-    location: "Delhi, NCR",
-    email: "vikram.singh@email.com",
-    phone: "+91 98765 43211",
-    linkedin: "linkedin.com/in/vikramsingh",
-    github: "github.com/vikramsingh",
-    leetcode: "leetcode.com/vikramsingh",
-    notes: "Extensive backend experience, AWS certified",
-    avatar: "VS",
-    job: "Backend Developer",
-    jobId: 2,
-  },
-  {
-    id: 5,
-    name: "Ananya Joshi",
-    score: 91,
-    skills: ["Python", "Django", "Redis"],
-    contactStatus: "Contacted",
-    statusColor: "bg-primary/10 text-primary",
-    experience: "5 years",
-    location: "Hyderabad, Telangana",
-    email: "ananya.joshi@email.com",
-    phone: "+91 98765 43212",
-    linkedin: "linkedin.com/in/ananyajoshi",
-    github: "github.com/ananyajoshi",
-    leetcode: "leetcode.com/ananyajoshi",
-    notes: "Python expert with microservices architecture experience",
-    avatar: "AJ",
-    job: "Backend Developer",
-    jobId: 2,
-  },
-  {
-    id: 6,
-    name: "Rajesh Kumar",
-    score: 88,
-    skills: ["Java", "Spring Boot", "MongoDB"],
-    contactStatus: "Scheduled",
-    statusColor: "bg-green-100 text-green-700",
-    experience: "8 years",
-    location: "Pune, Maharashtra",
-    email: "rajesh.kumar@email.com",
-    phone: "+91 98765 43213",
-    linkedin: "linkedin.com/in/rajeshkumar",
-    github: "github.com/rajeshkumar",
-    leetcode: "leetcode.com/rajeshkumar",
-    notes: "Senior Java developer with enterprise application experience",
-    avatar: "RK",
-    job: "Backend Developer",
-    jobId: 2,
-  },
-  // Product Designer candidates (jobId: 3)
-  {
-    id: 7,
-    name: "Kavya Mehta",
-    score: 95,
-    skills: ["Figma", "User Research", "Design Systems"],
-    contactStatus: "Scheduled",
-    statusColor: "bg-green-100 text-green-700",
-    experience: "4 years",
-    location: "Chennai, Tamil Nadu",
-    email: "kavya.mehta@email.com",
-    phone: "+91 98765 43214",
-    linkedin: "linkedin.com/in/kavyamehta",
-    github: "github.com/kavyamehta",
-    leetcode: "leetcode.com/kavyamehta",
-    notes: "Award-winning designer, strong portfolio",
-    avatar: "KM",
-    job: "Product Designer",
-    jobId: 3,
-  },
-  {
-    id: 8,
-    name: "Meera Nair",
-    score: 92,
-    skills: ["Sketch", "Prototyping", "User Testing"],
-    contactStatus: "Contacted",
-    statusColor: "bg-primary/10 text-primary",
-    experience: "6 years",
-    location: "Kochi, Kerala",
-    email: "meera.nair@email.com",
-    phone: "+91 98765 43215",
-    linkedin: "linkedin.com/in/meeranair",
-    github: "github.com/meeranair",
-    leetcode: "leetcode.com/meeranair",
-    notes: "UX/UI specialist with extensive user research background",
-    avatar: "MN",
-    job: "Product Designer",
-    jobId: 3,
-  },
-];
-
 interface CandidateTableProps {
-  jobId?: number;
+  jobId?: string; // Changed to string to match Firestore job IDs
   showAllJobs?: boolean;
   searchTerm?: string;
   jobFilter?: string;
@@ -227,14 +72,45 @@ export function CandidateTable({
   const [sortBy, setSortBy] = useState<string>("score");
   const [showAptitudeTestDialog, setShowAptitudeTestDialog] = useState(false);
   const [testCandidate, setTestCandidate] = useState<Candidate | null>(null);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock job data - in real app, this would come from props or API
-  const jobData = {
-    id: jobId?.toString() || "1",
-    title: "Frontend Developer", // This should come from actual job data
+  // Get contexts
+  const { getCandidatesForJob } = useCandidates();
+  const { getJobById } = useJobs();
+
+  // Load candidates based on jobId
+  useEffect(() => {
+    const loadCandidates = async () => {
+      if (jobId) {
+        setLoading(true);
+        try {
+          const jobCandidates = await getCandidatesForJob(jobId);
+          setCandidates(jobCandidates);
+        } catch (error) {
+          console.error("Error loading candidates:", error);
+          setCandidates([]);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+        setCandidates([]);
+      }
+    };
+
+    loadCandidates();
+  }, [jobId, getCandidatesForJob]);
+
+  // Get job data
+  const jobData = jobId ? getJobById(parseInt(jobId)) : null;
+  const jobDataForTest = {
+    id: jobId || "1",
+    title: jobData?.title || "Frontend Developer",
     description:
-      "We are looking for an experienced Frontend Developer to join our team...",
-    skills: ["React", "TypeScript", "Next.js", "CSS", "JavaScript"],
+      jobData?.description ||
+      "We are looking for an experienced developer to join our team...",
+    skills: jobData?.skills || ["React", "TypeScript", "Next.js"],
   };
 
   const handleSendAptitudeTest = (candidate: Candidate) => {
@@ -242,10 +118,19 @@ export function CandidateTable({
     setShowAptitudeTestDialog(true);
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center">Loading candidates...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   // Filter candidates based on multiple criteria
-  let filteredCandidates = jobId
-    ? allCandidates.filter((candidate) => candidate.jobId === jobId)
-    : allCandidates;
+  let filteredCandidates = candidates;
 
   // Apply search filter
   if (searchTerm) {
@@ -255,32 +140,21 @@ export function CandidateTable({
         candidate.skills.some((skill) =>
           skill.toLowerCase().includes(searchTerm.toLowerCase()),
         ) ||
-        candidate.location.toLowerCase().includes(searchTerm.toLowerCase()),
+        (candidate.location &&
+          candidate.location.toLowerCase().includes(searchTerm.toLowerCase())),
     );
   }
 
-  // Apply job filter
-  if (jobFilter !== "all") {
-    const jobMapping: { [key: string]: string } = {
-      frontend: "Frontend Developer",
-      backend: "Backend Developer",
-      designer: "Product Designer",
-    };
-    filteredCandidates = filteredCandidates.filter(
-      (candidate) => candidate.job === jobMapping[jobFilter],
-    );
-  }
-
-  // Apply status filter
+  // Apply status filter (removed job filter since we're already filtering by job)
   if (statusFilter !== "all") {
     const statusMapping: { [key: string]: string } = {
-      "not-contacted": "Not Contacted",
-      contacted: "Contacted",
-      scheduled: "Scheduled",
-      interviewed: "Interviewed",
+      pending: "pending",
+      analyzed: "analyzed",
+      contacted: "contacted",
+      scheduled: "scheduled",
     };
     filteredCandidates = filteredCandidates.filter(
-      (candidate) => candidate.contactStatus === statusMapping[statusFilter],
+      (candidate) => candidate.status === statusMapping[statusFilter],
     );
   }
 
@@ -342,7 +216,11 @@ export function CandidateTable({
                       <div className="flex items-center space-x-3">
                         <Avatar>
                           <AvatarFallback className="bg-primary/10 text-primary">
-                            {candidate.avatar}
+                            {candidate.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -350,7 +228,7 @@ export function CandidateTable({
                             {candidate.name}
                           </p>
                           <p className="text-sm text-slate-500">
-                            {candidate.experience} experience
+                            {candidate.experience} years experience
                           </p>
                         </div>
                       </div>
@@ -384,13 +262,21 @@ export function CandidateTable({
                     {showAllJobs && (
                       <td className="py-4 px-4">
                         <span className="text-sm text-slate-600">
-                          {candidate.job}
+                          {jobDataForTest.title}
                         </span>
                       </td>
                     )}
                     <td className="py-4 px-4">
-                      <Badge className={candidate.statusColor}>
-                        {candidate.contactStatus}
+                      <Badge
+                        className={
+                          candidate.status === "scheduled"
+                            ? "bg-green-100 text-green-700"
+                            : candidate.status === "contacted"
+                              ? "bg-primary/10 text-primary"
+                              : "bg-slate-100 text-slate-700"
+                        }
+                      >
+                        {candidate.status}
                       </Badge>
                     </td>
                     <td className="py-4 px-4">
@@ -437,7 +323,7 @@ export function CandidateTable({
                 <div className="flex items-center space-x-4">
                   <Avatar className="w-16 h-16">
                     <AvatarFallback className="bg-primary/10 text-primary text-xl">
-                      {selectedCandidate.avatar}
+                      {selectedCandidate.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -445,7 +331,8 @@ export function CandidateTable({
                       {selectedCandidate.name}
                     </SheetTitle>
                     <SheetDescription className="text-slate-600">
-                      {selectedCandidate.job} • {selectedCandidate.location}
+                      {jobData?.title || "No position specified"} •{" "}
+                      {selectedCandidate.location || "Location not specified"}
                     </SheetDescription>
                   </div>
                 </div>
@@ -468,15 +355,23 @@ export function CandidateTable({
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-2xl font-bold text-slate-900 mb-1">
-                        {selectedCandidate.experience.split(" ")[0]}
+                        {selectedCandidate.experience}
                       </p>
                       <p className="text-sm text-slate-600">Years Exp</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
-                      <Badge className={selectedCandidate.statusColor}>
-                        {selectedCandidate.contactStatus}
+                      <Badge
+                        className={
+                          selectedCandidate.status === "scheduled"
+                            ? "bg-green-100 text-green-700"
+                            : selectedCandidate.status === "contacted"
+                              ? "bg-primary/10 text-primary"
+                              : "bg-slate-100 text-slate-700"
+                        }
+                      >
+                        {selectedCandidate.status}
                       </Badge>
                       <p className="text-sm text-slate-600 mt-1">Status</p>
                     </CardContent>
@@ -514,7 +409,7 @@ export function CandidateTable({
                     <div className="flex items-center space-x-3">
                       <Phone className="w-4 h-4 text-slate-500" />
                       <span className="text-sm text-slate-700">
-                        {selectedCandidate.phone}
+                        {selectedCandidate.phone || "No phone number"}
                       </span>
                     </div>
                   </div>
@@ -526,23 +421,23 @@ export function CandidateTable({
                 <div>
                   <h3 className="font-semibold text-slate-900 mb-3">Links</h3>
                   <div className="space-y-3">
-                    <Button variant="outline" className="w-full justify-start">
-                      <Linkedin className="w-4 h-4 mr-2 text-blue-600" />
-                      LinkedIn Profile
-                      <ExternalLink className="w-3 h-3 ml-auto" />
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      <Github className="w-4 h-4 mr-2" />
-                      GitHub Profile
-                      <ExternalLink className="w-3 h-3 ml-auto" />
-                    </Button>
-                    {selectedCandidate.leetcode && (
+                    {selectedCandidate.linkedin && (
                       <Button
                         variant="outline"
                         className="w-full justify-start"
                       >
-                        <Code className="w-4 h-4 mr-2 text-orange-600" />
-                        LeetCode Profile
+                        <Linkedin className="w-4 h-4 mr-2 text-blue-600" />
+                        LinkedIn Profile
+                        <ExternalLink className="w-3 h-3 ml-auto" />
+                      </Button>
+                    )}
+                    {selectedCandidate.github && (
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
+                        <Github className="w-4 h-4 mr-2" />
+                        GitHub Profile
                         <ExternalLink className="w-3 h-3 ml-auto" />
                       </Button>
                     )}
@@ -557,11 +452,16 @@ export function CandidateTable({
 
                 {/* Summary */}
                 <div>
-                  <h3 className="font-semibold text-slate-900 mb-3">Summary</h3>
-                  <p className="text-sm text-slate-700 bg-slate-50 p-3 rounded-lg">
-                    {selectedCandidate.notes}
+                  <h3 className="font-semibold text-slate-900 mb-3">
+                    Assessment Summary
+                  </h3>
+                  <p className="text-sm text-slate-600">
+                    {selectedCandidate.overallAssessment ||
+                      "No assessment available"}
                   </p>
                 </div>
+
+                <Separator />
 
                 {/* Action Buttons */}
                 <div className="space-y-3">
@@ -584,11 +484,20 @@ export function CandidateTable({
       <CreateAptitudeTestDialog
         open={showAptitudeTestDialog}
         onOpenChange={setShowAptitudeTestDialog}
-        jobData={jobData}
+        jobData={
+          jobData
+            ? {
+                id: jobData.id.toString(),
+                title: jobData.title,
+                description: jobData.description,
+                skills: jobData.skills || [],
+              }
+            : undefined
+        }
         candidate={
           testCandidate
             ? {
-                id: testCandidate.id.toString(),
+                id: testCandidate.id,
                 name: testCandidate.name,
                 email: testCandidate.email,
               }
