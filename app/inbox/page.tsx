@@ -104,8 +104,6 @@ export default function Inbox() {
       if (!response.ok) {
         throw new Error(`Failed to make call: ${response.statusText}`);
       }
-
-      console.log("Call initiated successfully");
     } catch (error) {
       console.error("Error making call:", error);
     }

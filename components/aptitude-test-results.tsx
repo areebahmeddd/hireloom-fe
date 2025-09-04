@@ -94,7 +94,6 @@ export function AptitudeTestResults({
   };
 
   const handleScheduleInterview = (candidateEmail: string) => {
-    // In real app, this would open the interview scheduling flow
     console.log("Schedule interview for:", candidateEmail);
   };
 

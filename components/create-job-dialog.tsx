@@ -103,9 +103,6 @@ export function CreateJobDialog({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("🚀 Submitting job form with data:", formData);
-    console.log("🔧 Is edit mode:", isEditMode);
-
     if (isEditMode && editJob && onJobUpdate) {
       // Update existing job
       const updatedJob = {
@@ -118,7 +115,6 @@ export function CreateJobDialog({
         skills: formData.skills,
         jobPortals: formData.jobPortals,
       };
-      console.log("📝 Updating job with data:", updatedJob);
       onJobUpdate(updatedJob);
     } else {
       // Create new job - only pass required fields

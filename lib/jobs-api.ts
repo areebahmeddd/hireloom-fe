@@ -87,9 +87,6 @@ export async function updateJob(
   updates: Partial<Job>,
 ): Promise<Job> {
   try {
-    console.log("🔄 Updating job with ID:", id);
-    console.log("📝 Update data being sent:", updates);
-
     const response = await fetch(`${API_BASE_URL}/api/v1/jobs/${id}`, {
       method: "PUT",
       headers: {
@@ -98,14 +95,11 @@ export async function updateJob(
       body: JSON.stringify(updates),
     });
 
-    console.log("📡 API Response status:", response.status);
-
     if (!response.ok) {
       throw new Error(`Failed to update job: ${response.statusText}`);
     }
 
     const updatedJob: Job = await response.json();
-    console.log("✅ Updated job received from API:", updatedJob);
     return updatedJob;
   } catch (error) {
     console.error("Error updating job:", error);

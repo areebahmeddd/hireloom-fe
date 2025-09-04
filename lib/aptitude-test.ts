@@ -52,11 +52,13 @@ export const generateQuestionsFromJobDescription = async (
   const mockQuestions: Question[] = [];
 
   // Generate questions based on skills
+  const timestamp = Date.now();
+
   skills.forEach((skill, index) => {
     if (mockQuestions.length < questionCount) {
       // Technical multiple choice question
       mockQuestions.push({
-        id: `q${index + 1}`,
+        id: `q${timestamp}-${index + 1}`,
         type: "multiple_choice",
         question: `What is the primary advantage of using ${skill} in modern web development?`,
         options: [
@@ -75,7 +77,7 @@ export const generateQuestionsFromJobDescription = async (
     if (mockQuestions.length < questionCount) {
       // Scenario-based question
       mockQuestions.push({
-        id: `q${index + 2}`,
+        id: `q${timestamp}-${index + 2}`,
         type: "scenario",
         question: `You're working on a project that requires ${skill}. Describe how you would approach implementing a complex feature that needs to scale for 100,000+ users.`,
         difficulty,
@@ -91,7 +93,7 @@ export const generateQuestionsFromJobDescription = async (
     jobTitle.toLowerCase().includes("engineer")
   ) {
     mockQuestions.push({
-      id: "general1",
+      id: `general-${timestamp}-1`,
       type: "multiple_choice",
       question: "What is the most important principle in software development?",
       options: [
@@ -172,15 +174,18 @@ export const sendTestToCandidate = async (
       }),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ API response error:", errorText);
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
+    }
+
     const result = await response.json();
 
     if (!result.success) {
       throw new Error(result.error || "Failed to send email");
     }
 
-    console.log(
-      `✅ Test email sent successfully to ${candidateName} (${candidateEmail})`,
-    );
     return testLink;
   } catch (error) {
     console.error("Error sending test email:", error);

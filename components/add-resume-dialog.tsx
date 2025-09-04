@@ -90,8 +90,6 @@ export function AddResumeDialog({
       }
 
       const result = await response.json();
-      console.log("Resume analysis result:", result);
-
       setUploadStatus("success");
 
       // Trigger refresh to show new candidate

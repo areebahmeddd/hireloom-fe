@@ -29,7 +29,7 @@ import {
   AptitudeTest,
   Question,
 } from "@/lib/aptitude-test";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface CreateAptitudeTestDialogProps {
   open: boolean;
@@ -53,6 +53,7 @@ export function CreateAptitudeTestDialog({
   jobData,
   candidate,
 }: CreateAptitudeTestDialogProps) {
+  const { toast } = useToast();
   const [step, setStep] = useState<"setup" | "preview" | "send">("setup");
   const [testConfig, setTestConfig] = useState({
     duration: 30,
@@ -78,9 +79,16 @@ export function CreateAptitudeTestDialog({
       );
       setGeneratedQuestions(questions);
       setStep("preview");
-      toast.success("Questions generated successfully!");
+      toast({
+        title: "✅ Questions generated successfully!",
+        description: `Generated ${questions.length} questions for the test.`,
+      });
     } catch (error) {
-      toast.error("Failed to generate questions");
+      toast({
+        title: "❌ Failed to generate questions",
+        description: "Please try again or check your inputs.",
+        variant: "destructive",
+      });
       console.error("Error generating questions:", error);
     } finally {
       setIsGenerating(false);
@@ -88,7 +96,14 @@ export function CreateAptitudeTestDialog({
   };
 
   const handleSendTest = async () => {
-    if (!jobData || !candidate || generatedQuestions.length === 0) return;
+    if (!jobData || !candidate || generatedQuestions.length === 0) {
+      toast({
+        title: "❌ Cannot send test",
+        description: "Missing job data, candidate information, or questions",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSending(true);
     try {
@@ -110,9 +125,9 @@ export function CreateAptitudeTestDialog({
         candidate.name,
       );
 
-      toast.success("✅ Test email sent successfully!", {
+      toast({
+        title: "✅ Test email sent successfully!",
         description: `Aptitude test invitation sent to ${candidate.name} at ${candidate.email}`,
-        duration: 5000,
       });
 
       // Reset and close dialog
@@ -122,11 +137,14 @@ export function CreateAptitudeTestDialog({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
-      toast.error("❌ Failed to send test email", {
+
+      console.error("❌ Error sending test:", error);
+
+      toast({
+        title: "❌ Failed to send test email",
         description: `Could not send test to ${candidate.email}. ${errorMessage}`,
-        duration: 7000,
+        variant: "destructive",
       });
-      console.error("Error sending test:", error);
     } finally {
       setIsSending(false);
     }
@@ -308,7 +326,7 @@ export function CreateAptitudeTestDialog({
 
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {generatedQuestions.map((question, index) => (
-                <Card key={question.id}>
+                <Card key={`${question.id}-${index}`}>
                   <CardContent className="pt-4">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">

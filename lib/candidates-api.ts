@@ -43,32 +43,16 @@ const CANDIDATES_COLLECTION = "candidates";
 // Get all candidates who applied for a specific job
 export async function getCandidatesForJob(jobId: string): Promise<Candidate[]> {
   try {
-    console.log(
-      "🔍 Searching for candidates with jobId:",
-      jobId,
-      "type:",
-      typeof jobId,
-    );
-
     const candidatesQuery = query(
       collection(db, CANDIDATES_COLLECTION),
       where("applied_jobs", "array-contains", jobId),
     );
 
-    console.log("📋 Executing Firestore query...");
     const querySnapshot = await getDocs(candidatesQuery);
-
-    console.log("📊 Query results:", querySnapshot.size, "documents found");
 
     const candidates: Candidate[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      console.log(
-        "👤 Found candidate:",
-        data.candidate_name,
-        "applied_jobs:",
-        data.applied_jobs,
-      );
 
       candidates.push({
         id: doc.id,
@@ -97,7 +81,6 @@ export async function getCandidatesForJob(jobId: string): Promise<Candidate[]> {
       });
     });
 
-    console.log("✅ Processed candidates:", candidates.length);
     return candidates;
   } catch (error) {
     console.error("❌ Error fetching candidates for job:", error);
@@ -192,8 +175,6 @@ export async function updateCandidateStatus(
       status: status,
       updated_at: new Date(),
     });
-
-    console.log(`✅ Updated candidate ${candidateId} status to: ${status}`);
   } catch (error) {
     console.error("❌ Error updating candidate status:", error);
     throw error;

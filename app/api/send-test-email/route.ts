@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+// Force dynamic rendering for this API route
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { to, subject, testId, jobTitle, candidateName, questions } =
@@ -115,9 +118,13 @@ export async function POST(req: NextRequest) {
       message: "Email sent successfully",
     });
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("❌ Error sending email:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to send email" },
+      {
+        success: false,
+        error: "Failed to send email",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }

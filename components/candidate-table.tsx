@@ -27,6 +27,7 @@ import {
   Brain,
 } from "lucide-react";
 import { CreateAptitudeTestDialog } from "./create-aptitude-test-dialog";
+import { ComposeEmailDialog } from "./compose-email-dialog";
 import { useCandidates } from "@/lib/candidates-context";
 import { useJobs } from "@/lib/jobs-context";
 import { useToast } from "@/hooks/use-toast";
@@ -74,6 +75,8 @@ export function CandidateTable({
   const [sortBy, setSortBy] = useState<string>("score");
   const [showAptitudeTestDialog, setShowAptitudeTestDialog] = useState(false);
   const [testCandidate, setTestCandidate] = useState<Candidate | null>(null);
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailCandidate, setEmailCandidate] = useState<Candidate | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -130,12 +133,15 @@ export function CandidateTable({
     setShowAptitudeTestDialog(true);
   };
 
+  const handleSendEmail = (candidate: Candidate) => {
+    setEmailCandidate(candidate);
+    setShowEmailDialog(true);
+  };
+
   const handleStartConversation = async (
     candidate: Candidate,
     candidateIndex: number,
   ) => {
-    console.log("Starting conversation with candidate:", candidate.name);
-
     try {
       const response = await fetch(
         "https://api.shivanshkaran.tech/api/v1/telegram/outreach",
@@ -156,12 +162,10 @@ export function CandidateTable({
       }
 
       const result = await response.json();
-      console.log("Telegram outreach initiated successfully:", result);
 
       // Update candidate status to "contacted" after successful conversation
       try {
         await updateCandidateStatus(candidate.id, "contacted");
-        console.log(`Updated candidate ${candidate.id} status to contacted`);
 
         // Update local state immediately for better UX
         setCandidates((prevCandidates) =>
@@ -169,8 +173,6 @@ export function CandidateTable({
             c.id === candidate.id ? { ...c, contact_status: "contacted" } : c,
           ),
         );
-
-        console.log("Local state updated successfully");
       } catch (statusError) {
         console.error("Error updating candidate status:", statusError);
         // Don't throw here - the conversation was successful even if status update failed
@@ -182,8 +184,6 @@ export function CandidateTable({
         description: `Message sent to ${candidate.name} via Telegram. Status updated to contacted.`,
         duration: 4000,
       });
-
-      console.log("Success toast triggered");
 
       // Close the sheet after successful conversation
       setIsSheetOpen(false);
@@ -198,8 +198,6 @@ export function CandidateTable({
         variant: "destructive",
         duration: 4000,
       });
-
-      console.log("Error toast triggered");
     }
   };
 
@@ -405,7 +403,16 @@ export function CandidateTable({
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-1">
-                        <Button variant="ghost" size="sm">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleSendEmail(candidate);
+                          }}
+                          title="Send Email"
+                        >
                           <Mail className="w-4 h-4" />
                         </Button>
                         <Button
@@ -669,6 +676,22 @@ export function CandidateTable({
               }
             : undefined
         }
+      />
+
+      {/* Email Compose Dialog */}
+      <ComposeEmailDialog
+        open={showEmailDialog}
+        onOpenChange={setShowEmailDialog}
+        candidate={
+          emailCandidate
+            ? {
+                id: emailCandidate.id,
+                name: emailCandidate.name,
+                email: emailCandidate.email,
+              }
+            : undefined
+        }
+        jobTitle={jobData?.title}
       />
     </>
   );
