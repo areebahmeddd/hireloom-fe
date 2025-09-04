@@ -426,10 +426,12 @@ export function CandidateTable({
                         variant="outline"
                         className="w-full justify-start"
                         onClick={() => {
-                          const url = selectedCandidate.linkedin?.startsWith('http') 
-                            ? selectedCandidate.linkedin 
+                          const url = selectedCandidate.linkedin?.startsWith(
+                            "http",
+                          )
+                            ? selectedCandidate.linkedin
                             : `https://${selectedCandidate.linkedin}`;
-                          window.open(url, '_blank');
+                          window.open(url, "_blank");
                         }}
                       >
                         <Linkedin className="w-4 h-4 mr-2 text-blue-600" />
@@ -442,10 +444,12 @@ export function CandidateTable({
                         variant="outline"
                         className="w-full justify-start"
                         onClick={() => {
-                          const url = selectedCandidate.github?.startsWith('http') 
-                            ? selectedCandidate.github 
+                          const url = selectedCandidate.github?.startsWith(
+                            "http",
+                          )
+                            ? selectedCandidate.github
                             : `https://${selectedCandidate.github}`;
-                          window.open(url, '_blank');
+                          window.open(url, "_blank");
                         }}
                       >
                         <Github className="w-4 h-4 mr-2" />

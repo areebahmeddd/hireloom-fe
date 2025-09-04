@@ -86,11 +86,13 @@ export default function JobManagement() {
 
   const handleJobUpdate = async (updatedJob: any) => {
     try {
-      await updateJob(updatedJob.id, updatedJob);
-      setSelectedJob(updatedJob);
+      const result = await updateJob(updatedJob.id, updatedJob);
+      setSelectedJob(result);
       setIsEditDialogOpen(false);
+      console.log("Job updated successfully");
     } catch (error) {
       console.error("Failed to update job:", error);
+      alert("Failed to update job. Please try again.");
     }
   };
 
@@ -99,10 +101,13 @@ export default function JobManagement() {
       await deleteJob(jobId);
       if (selectedJob?.id === jobId) {
         const remainingJobs = jobs.filter((j) => j.id !== jobId);
-        setSelectedJob(remainingJobs.length > 0 ? remainingJobs[0] : jobs[0]);
+        setSelectedJob(remainingJobs.length > 0 ? remainingJobs[0] : null);
       }
+      // Show success message (you can add a toast notification here)
+      console.log("Job deleted successfully");
     } catch (error) {
       console.error("Failed to delete job:", error);
+      alert("Failed to delete job. Please try again.");
     }
   };
 
