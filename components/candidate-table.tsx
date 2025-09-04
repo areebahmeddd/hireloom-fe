@@ -29,6 +29,7 @@ import {
 import { CreateAptitudeTestDialog } from "./create-aptitude-test-dialog";
 import { useCandidates } from "@/lib/candidates-context";
 import { useJobs } from "@/lib/jobs-context";
+import { useToast } from "@/hooks/use-toast";
 
 interface Candidate {
   id: string;
@@ -69,6 +70,7 @@ export function CandidateTable({
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(
     null,
   );
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sortBy, setSortBy] = useState<string>("score");
   const [showAptitudeTestDialog, setShowAptitudeTestDialog] = useState(false);
   const [testCandidate, setTestCandidate] = useState<Candidate | null>(null);
@@ -76,8 +78,9 @@ export function CandidateTable({
   const [loading, setLoading] = useState(true);
 
   // Get contexts
-  const { getCandidatesForJob } = useCandidates();
+  const { getCandidatesForJob, updateCandidateStatus } = useCandidates();
   const { getJobById } = useJobs();
+  const { toast } = useToast();
 
   // Load candidates based on jobId
   useEffect(() => {
@@ -116,6 +119,79 @@ export function CandidateTable({
   const handleSendAptitudeTest = (candidate: Candidate) => {
     setTestCandidate(candidate);
     setShowAptitudeTestDialog(true);
+  };
+
+  const handleStartConversation = async (
+    candidate: Candidate,
+    candidateIndex: number,
+  ) => {
+    console.log("Starting conversation with candidate:", candidate.name);
+
+    try {
+      const response = await fetch(
+        "https://api.shivanshkaran.tech/api/v1/telegram/outreach",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            target_chat_id: "8094940690",
+            candidate_index: candidateIndex,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to start conversation: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("Telegram outreach initiated successfully:", result);
+
+      // Update candidate status to "contacted" after successful conversation
+      try {
+        await updateCandidateStatus(candidate.id, "contacted");
+        console.log(`Updated candidate ${candidate.id} status to contacted`);
+
+        // Update local state immediately for better UX
+        setCandidates((prevCandidates) =>
+          prevCandidates.map((c) =>
+            c.id === candidate.id ? { ...c, contact_status: "contacted" } : c,
+          ),
+        );
+
+        console.log("Local state updated successfully");
+      } catch (statusError) {
+        console.error("Error updating candidate status:", statusError);
+        // Don't throw here - the conversation was successful even if status update failed
+      }
+
+      // Show success toast
+      toast({
+        title: "✅ Conversation Started!",
+        description: `Message sent to ${candidate.name} via Telegram. Status updated to contacted.`,
+        duration: 4000,
+      });
+
+      console.log("Success toast triggered");
+
+      // Close the sheet after successful conversation
+      setIsSheetOpen(false);
+      setSelectedCandidate(null);
+    } catch (error) {
+      console.error("Error starting conversation:", error);
+
+      // Show error toast
+      toast({
+        title: "❌ Failed to Start Conversation",
+        description: `Could not send message to ${candidate.name}. Please try again.`,
+        variant: "destructive",
+        duration: 4000,
+      });
+
+      console.log("Error toast triggered");
+    }
   };
 
   // Show loading state
@@ -206,11 +282,14 @@ export function CandidateTable({
                 </tr>
               </thead>
               <tbody>
-                {sortedCandidates.map((candidate) => (
+                {sortedCandidates.map((candidate, index) => (
                   <tr
                     key={candidate.id}
                     className="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer"
-                    onClick={() => setSelectedCandidate(candidate)}
+                    onClick={() => {
+                      setSelectedCandidate(candidate);
+                      setIsSheetOpen(true);
+                    }}
                   >
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-3">
@@ -284,7 +363,15 @@ export function CandidateTable({
                         <Button variant="ghost" size="sm">
                           <Mail className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleStartConversation(candidate, index);
+                          }}
+                        >
                           <MessageSquare className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="sm">
@@ -313,8 +400,13 @@ export function CandidateTable({
 
       {/* Candidate Profile Drawer */}
       <Sheet
-        open={!!selectedCandidate}
-        onOpenChange={() => setSelectedCandidate(null)}
+        open={isSheetOpen}
+        onOpenChange={(open) => {
+          setIsSheetOpen(open);
+          if (!open) {
+            setSelectedCandidate(null);
+          }
+        }}
       >
         <SheetContent className="w-[600px] sm:max-w-[600px] overflow-y-auto">
           {selectedCandidate && (
@@ -481,7 +573,20 @@ export function CandidateTable({
 
                 {/* Action Buttons */}
                 <div className="space-y-3">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Button
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const candidateIndex = sortedCandidates.findIndex(
+                        (c) => c.id === selectedCandidate.id,
+                      );
+                      handleStartConversation(
+                        selectedCandidate,
+                        candidateIndex,
+                      );
+                    }}
+                  >
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Start Conversation
                   </Button>

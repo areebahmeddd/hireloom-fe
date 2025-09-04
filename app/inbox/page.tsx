@@ -92,6 +92,25 @@ export default function Inbox() {
   );
   const [messageInput, setMessageInput] = useState("");
 
+  const handleMakeCall = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/make_call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to make call: ${response.statusText}`);
+      }
+
+      console.log("Call initiated successfully");
+    } catch (error) {
+      console.error("Error making call:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -239,7 +258,12 @@ export default function Inbox() {
                     <Calendar className="w-3 h-3 mr-1" />
                     Schedule
                   </Button>
-                  <Button size="sm" variant="outline" className="text-xs">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs"
+                    onClick={handleMakeCall}
+                  >
                     <Phone className="w-3 h-3 mr-1" />
                     Call
                   </Button>

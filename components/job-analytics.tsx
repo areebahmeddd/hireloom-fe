@@ -11,13 +11,16 @@ interface Job {
 
 interface JobAnalyticsProps {
   job: Job;
+  candidateCount?: number;
 }
 
-export function JobAnalytics({ job }: JobAnalyticsProps) {
+export function JobAnalytics({ job, candidateCount }: JobAnalyticsProps) {
+  const actualCandidateCount = candidateCount ?? job.candidates;
+
   const stats = [
     {
       label: "Total Candidates",
-      value: job.candidates,
+      value: actualCandidateCount,
       icon: Users,
       color: "text-primary",
       bgColor: "bg-primary/10",
@@ -38,7 +41,10 @@ export function JobAnalytics({ job }: JobAnalyticsProps) {
     },
     {
       label: "Response Rate",
-      value: `${Math.round((job.contacted / job.candidates) * 100)}%`,
+      value:
+        actualCandidateCount > 0
+          ? `${Math.round((job.contacted / actualCandidateCount) * 100)}%`
+          : "0%",
       icon: TrendingUp,
       color: "text-orange-600",
       bgColor: "bg-orange-100",

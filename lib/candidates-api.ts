@@ -178,3 +178,24 @@ export function formatCandidateForDisplay(candidate: Candidate) {
     appliedJobs: candidate.applied_jobs,
   };
 }
+
+// Update candidate status
+export async function updateCandidateStatus(
+  candidateId: string,
+  status: string,
+): Promise<void> {
+  try {
+    const { doc, updateDoc } = await import("firebase/firestore");
+    const candidateRef = doc(db, CANDIDATES_COLLECTION, candidateId);
+
+    await updateDoc(candidateRef, {
+      status: status,
+      updated_at: new Date(),
+    });
+
+    console.log(`✅ Updated candidate ${candidateId} status to: ${status}`);
+  } catch (error) {
+    console.error("❌ Error updating candidate status:", error);
+    throw error;
+  }
+}

@@ -12,6 +12,7 @@ import {
   getCandidatesForJob,
   getAllCandidates,
   formatCandidateForDisplay,
+  updateCandidateStatus,
 } from "./candidates-api";
 
 interface CandidatesContextType {
@@ -20,6 +21,7 @@ interface CandidatesContextType {
   error: string | null;
   getCandidatesForJob: (jobId: string) => Promise<any[]>;
   refreshCandidates: () => Promise<void>;
+  updateCandidateStatus: (candidateId: string, status: string) => Promise<void>;
 }
 
 const CandidatesContext = createContext<CandidatesContextType | undefined>(
@@ -70,12 +72,32 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
     loadAllCandidates();
   }, []);
 
+  const updateCandidateStatusAndRefresh = async (
+    candidateId: string,
+    status: string,
+  ) => {
+    try {
+      await updateCandidateStatus(candidateId, status);
+      // Refresh candidates after status update
+      await loadAllCandidates();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to update candidate status",
+      );
+      console.error("Error updating candidate status:", err);
+      throw err;
+    }
+  };
+
   const value = {
     candidates,
     loading,
     error,
     getCandidatesForJob: getCandidatesForJobId,
     refreshCandidates: loadAllCandidates,
+    updateCandidateStatus: updateCandidateStatusAndRefresh,
   };
 
   return (
